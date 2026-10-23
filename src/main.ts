@@ -1,5 +1,10 @@
 import promptSync = require("prompt-sync");
-import { cadastrarCliente, listarClientes, verCliente } from "./clientes";
+import {
+  cadastrarCliente,
+  editarCliente,
+  listarClientes,
+  verCliente,
+} from "./clientes";
 
 const prompt = promptSync({ sigint: true });
 
@@ -47,7 +52,7 @@ function menuClientes(): void {
         listarClientes();
         break;
       case "4":
-        console.log("Editando cliente...");
+        editarCliente();
         break;
 
       case "5":

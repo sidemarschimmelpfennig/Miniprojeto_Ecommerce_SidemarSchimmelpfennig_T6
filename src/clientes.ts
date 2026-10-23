@@ -117,8 +117,70 @@ function cadastrarCliente(): void {
   prompt("\nPressione Enter para voltar ao menu...");
 }
 
-function atualizarCliente(): void {}
+function editarCliente(): void {
+  console.log("\n=== EDITAR CLIENTE ===");
+
+  const emailBusca = prompt("Digite o e-mail do cliente: ")
+    .trim()
+    .toLowerCase();
+
+  const cliente = clientes.find(
+    (item) => item.email.trim().toLowerCase() === emailBusca,
+  );
+
+  if (!cliente) {
+    console.log("\nErro: cliente não encontrado.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  console.log("\n=== DADOS ATUAIS ===");
+  console.log(`Nome: ${cliente.nome}`);
+  console.log(`Idade: ${cliente.idade}`);
+  console.log(`E-mail: ${cliente.email}`);
+
+  console.log("\nDigite os novos dados.");
+  console.log("Pressione Enter para manter o valor atual.");
+
+  const nomeInput = prompt(`Nome (${cliente.nome}): `).trim();
+  const idadeInput = prompt(`Idade (${cliente.idade}): `).trim();
+  const emailInput = prompt(`E-mail (${cliente.email}): `).trim();
+
+  const nome = nomeInput || cliente.nome;
+  const idade = idadeInput === "" ? cliente.idade : Number(idadeInput);
+  const email = (emailInput || cliente.email).trim().toLowerCase();
+
+  if (!nome || !Number.isInteger(idade) || idade <= 0 || !email) {
+    console.log("\nErro: dados inválidos.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Verifica se o e-mail pertence a outro cliente
+  const emailExiste = clientes.some(
+    (item) =>
+      item.id !== cliente.id && item.email.trim().toLowerCase() === email,
+  );
+
+  if (emailExiste) {
+    console.log("\nErro: esse e-mail já pertence a outro cliente.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Atualiza os dados do cliente
+  cliente.nome = nome;
+  cliente.idade = idade;
+  cliente.email = email;
+
+  console.log("\nCliente atualizado com sucesso!");
+  console.log(`Nome: ${cliente.nome}`);
+  console.log(`Idade: ${cliente.idade}`);
+  console.log(`E-mail: ${cliente.email}`);
+
+  prompt("\nPressione Enter para voltar ao menu...");
+}
 
 function deletarCliente(): void {}
 
-export { verCliente, listarClientes, cadastrarCliente };
+export { verCliente, listarClientes, cadastrarCliente, editarCliente };
