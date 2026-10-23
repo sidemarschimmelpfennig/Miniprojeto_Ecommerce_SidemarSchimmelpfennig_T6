@@ -181,6 +181,57 @@ function editarCliente(): void {
   prompt("\nPressione Enter para voltar ao menu...");
 }
 
-function deletarCliente(): void {}
+function deletarCliente(): void {
+  console.log("\n=== EXCLUIR CLIENTE ===");
 
-export { verCliente, listarClientes, cadastrarCliente, editarCliente };
+  const email = prompt("Digite o e-mail do cliente: ").trim().toLowerCase();
+
+  const indice = clientes.findIndex(
+    (cliente) => cliente.email.trim().toLowerCase() === email,
+  );
+
+  if (indice === -1) {
+    console.log("\nErro: cliente não encontrado.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  const cliente = clientes[indice];
+
+  if (!cliente) {
+    console.log("\nErro: cliente não encontrado.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  console.log("\n=== DADOS DO CLIENTE ===");
+  console.log(`ID: ${cliente.id}`);
+  console.log(`Nome: ${cliente.nome}`);
+  console.log(`Idade: ${cliente.idade}`);
+  console.log(`E-mail: ${cliente.email}`);
+
+  const confirmar = prompt(
+    "\nTem certeza que deseja excluir este cliente? (s/n): ",
+  )
+    .trim()
+    .toLowerCase();
+
+  if (confirmar !== "s") {
+    console.log("\nExclusão cancelada.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  clientes.splice(indice, 1);
+
+  console.log("\nCliente excluído com sucesso!");
+  prompt("Pressione Enter para voltar ao menu...");
+}
+
+export {
+  verCliente,
+  listarClientes,
+  cadastrarCliente,
+  editarCliente,
+  deletarCliente,
+};

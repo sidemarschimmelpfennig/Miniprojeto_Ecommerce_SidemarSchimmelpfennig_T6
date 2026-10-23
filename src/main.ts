@@ -1,6 +1,7 @@
 import promptSync = require("prompt-sync");
 import {
   cadastrarCliente,
+  deletarCliente,
   editarCliente,
   listarClientes,
   verCliente,
@@ -9,18 +10,41 @@ import {
 const prompt = promptSync({ sigint: true });
 
 function menuPrincipal(): void {
-  let opcao;
-  console.log("\n=== MENU ===");
-  console.log("1 - Clientes");
-  opcao = prompt("Escolha uma opção: ");
-  switch (opcao) {
-    case "1":
-      menuClientes();
-      break;
-    case "0":
-      console.log("Voltando ao menu principal...");
-      break;
-  }
+  let opcao: string;
+
+  do {
+    console.log("\n=== MENU PRINCIPAL ===");
+    console.log("1 - Clientes");
+    console.log("0 - Sair do sistema");
+
+    opcao = prompt("Escolha uma opção: ").trim();
+
+    switch (opcao) {
+      case "1":
+        menuClientes();
+        break;
+
+      case "0": {
+        const confirmar = prompt("\nDeseja realmente sair do sistema? (s/n): ")
+          .trim()
+          .toLowerCase();
+
+        if (confirmar === "s") {
+          console.log("\nSistema encerrado. Até logo!");
+        } else {
+          console.log("\nRetornando ao menu principal...");
+          opcao = "";
+        }
+
+        break;
+      }
+
+      default:
+        console.log("\nOpção inválida!");
+        prompt("Pressione Enter para continuar...");
+        break;
+    }
+  } while (opcao !== "0");
 }
 
 function menuClientes(): void {
@@ -56,7 +80,7 @@ function menuClientes(): void {
         break;
 
       case "5":
-        console.log("Excluindo cliente...");
+        deletarCliente();
         break;
 
       case "0":
@@ -68,4 +92,5 @@ function menuClientes(): void {
     }
   } while (opcao !== "0");
 }
+
 menuPrincipal();
