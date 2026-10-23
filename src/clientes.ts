@@ -69,4 +69,56 @@ function listarClientes(): void {
     }
   } while (opcao !== "0");
 }
-export { verCliente, listarClientes };
+
+function cadastrarCliente(): void {
+  console.log("\n=== CADASTRAR CLIENTE ===");
+
+  const nome = prompt("Digite o nome: ").trim();
+  const idade = Number(prompt("Digite a idade: "));
+  const email = prompt("Digite o e-mail: ").trim();
+
+  // Validar campos
+  if (!nome || !email || !Number.isInteger(idade) || idade <= 0) {
+    console.log("\nErro: informe nome, e-mail e idade válida.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Verificar e-mail duplicado
+  const existe = clientes.some(
+    (cliente) => cliente.email.toLowerCase() === email.toLowerCase(),
+  );
+
+  if (existe) {
+    console.log("\nErro: já existe um cliente com esse e-mail.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Criar cliente
+  const novoCliente: Cliente = {
+    id:
+      clientes.length > 0
+        ? Math.max(...clientes.map((cliente) => cliente.id)) + 1
+        : 1,
+    nome,
+    idade,
+    email,
+    createdAt: new Date(),
+  };
+
+  clientes.push(novoCliente);
+
+  console.log("\nCliente cadastrado com sucesso!");
+  console.log(`ID: ${novoCliente.id}`);
+  console.log(`Nome: ${novoCliente.nome}`);
+  console.log(`E-mail: ${novoCliente.email}`);
+
+  prompt("\nPressione Enter para voltar ao menu...");
+}
+
+function atualizarCliente(): void {}
+
+function deletarCliente(): void {}
+
+export { verCliente, listarClientes, cadastrarCliente };

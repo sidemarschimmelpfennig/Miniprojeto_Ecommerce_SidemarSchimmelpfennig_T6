@@ -1,21 +1,7 @@
 import promptSync = require("prompt-sync");
-import { listarClientes, verCliente } from "./clientes";
-
-// import type { Cliente } from "./types";
+import { cadastrarCliente, listarClientes, verCliente } from "./clientes";
 
 const prompt = promptSync({ sigint: true });
-
-// const nomeInput: string = prompt("Digite o nome do cliente: ");
-// const idadeInput: number = Number(prompt("Digite a idade do cliente: "));
-// const email: string = prompt("Digite o email do cliente: ");
-
-// const novoCliente: Cliente = {
-//   id: Math.round(10),
-//   nome: nomeInput,
-//   idade: idadeInput,
-//   email: email,
-//   createdAt: new Date(),
-// };
 
 function menuPrincipal(): void {
   let opcao;
@@ -48,7 +34,7 @@ function menuClientes(): void {
 
     switch (opcao) {
       case "1":
-        console.log("Cadastrando cliente...");
+        cadastrarCliente();
         break;
       case "2": {
         const email = prompt("Digite o e-mail: ");
