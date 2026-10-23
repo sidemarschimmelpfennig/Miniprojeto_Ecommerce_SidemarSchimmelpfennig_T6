@@ -1,6 +1,6 @@
 import promptSync = require("prompt-sync");
+import { verCliente } from "./clientes";
 
-import { cadastrarCliente, verClientes } from "./clientes";
 // import type { Cliente } from "./types";
 
 const prompt = promptSync({ sigint: true });
@@ -38,9 +38,10 @@ function menuClientes(): void {
   do {
     console.log("\n=== Clientes ===");
     console.log("1 - Cadastrar");
-    console.log("2 - Listar");
-    console.log("3 - Editar");
-    console.log("4 - Excluir");
+    console.log("2 - Visualizar Cliente");
+    console.log("3 - Listar");
+    console.log("4 - Editar");
+    console.log("5 - Excluir");
     console.log("0 - Voltar");
 
     opcao = prompt("Escolha uma opção: ");
@@ -51,14 +52,21 @@ function menuClientes(): void {
         break;
 
       case "2":
+      case "2": {
+        const email = prompt("Digite o e-mail: ");
+        const resultado = verCliente(email);
+
+        console.log(resultado);
+        break;
+      }
+      case "3":
         console.log("Listando cliente...");
         break;
-
-      case "3":
+      case "4":
         console.log("Editando cliente...");
         break;
 
-      case "4":
+      case "5":
         console.log("Excluindo cliente...");
         break;
 

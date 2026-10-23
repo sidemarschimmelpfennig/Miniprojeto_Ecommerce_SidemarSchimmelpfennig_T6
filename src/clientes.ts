@@ -1,4 +1,7 @@
 import type { Cliente } from "./types";
+import promptSync = require("prompt-sync");
+const prompt = promptSync({ sigint: true });
+import { tratarErro } from "./utils/tratarErro";
 
 const clientes: Cliente[] = [
   {
@@ -10,12 +13,33 @@ const clientes: Cliente[] = [
   },
 ];
 
-function cadastrarCliente(cliente: Cliente): void {
-  clientes.push(cliente);
+function verCliente(email: string): Cliente | string {
+  const cliente = clientes.find((cliente) => cliente.email === email);
+
+  if (cliente) {
+    return cliente;
+  }
+
+  console.log("\n=== ERRO ===");
+  console.log("Cliente não encontrado.");
+  console.log("1 - Tentar novamente");
+  console.log("0 - Voltar ao menu anterior");
+
+  const opcao = prompt("Escolha uma opção: ");
+
+  switch (opcao) {
+    case "1": {
+      const novoEmail = prompt("Digite o e-mail novamente: ");
+      return verCliente(novoEmail);
+    }
+
+    case "0":
+      return "Operação cancelada";
+
+    default:
+      console.log("Opção inválida.");
+      return "Operação cancelada";
+  }
 }
 
-function verClientes(): Cliente[] {
-  return clientes;
-}
-
-export { cadastrarCliente, verClientes };
+export { verCliente };
