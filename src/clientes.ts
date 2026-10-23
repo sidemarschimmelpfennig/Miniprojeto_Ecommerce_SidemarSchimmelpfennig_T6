@@ -42,4 +42,31 @@ function verCliente(email: string): Cliente | string {
   }
 }
 
-export { verCliente };
+function listarClientes(): void {
+  console.log("\n=== LISTAGEM DE CLIENTES ===");
+
+  if (clientes.length === 0) {
+    console.log("Nenhum cliente cadastrado.");
+  } else {
+    clientes.forEach((cliente) => {
+      console.log("--------------------");
+      console.log(`ID: ${cliente.id}`);
+      console.log(`Nome: ${cliente.nome}`);
+      console.log(`Idade: ${cliente.idade}`);
+      console.log(`E-mail: ${cliente.email}`);
+    });
+  }
+
+  console.log("\n0 - Voltar");
+
+  let opcao: string;
+
+  do {
+    opcao = prompt("Escolha uma opção: ");
+
+    if (opcao !== "0") {
+      console.log("Opção inválida. Digite 0 para voltar.");
+    }
+  } while (opcao !== "0");
+}
+export { verCliente, listarClientes };
