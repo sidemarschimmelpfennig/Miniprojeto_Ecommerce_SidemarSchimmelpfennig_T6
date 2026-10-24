@@ -1,13 +1,109 @@
+import { verProduto } from "./produtos";
 import type { ItemCarrinho } from "./types";
+import { logAzul, logCinza, logVerde, logVermelho } from "./utils/console";
+import { promptCinza } from "./utils/prompt";
+import promptSync = require("prompt-sync");
+const prompt = promptSync({ sigint: true });
 
 const carrinho: ItemCarrinho[] = [];
 
 function adicionarAoCarrinho(): void {
-  // TODO: Adicionar produto ao carrinho
+  logAzul("\n         === ADICIONAR AO CARRINHO ===");
+
+  const produtoId = Number(prompt("          Digite o ID do produto: "));
+  const produto = verProduto(produtoId);
+
+  if (typeof produto === "string") {
+    logVerde("          Produto não encontrado.");
+    return;
+  }
+
+  const quantidade = Number(prompt("          Digite a quantidade: "));
+
+  if (!Number.isInteger(quantidade) || quantidade <= 0) {
+    console.log("Quantidade inválida.");
+    return;
+  }
+
+  const itemExistente = carrinho.find((item) => item.produtoId === produtoId);
+
+  const quantidadeAtual = itemExistente ? itemExistente.quantidade : 0;
+
+  if (quantidadeAtual + quantidade > produto.estoque) {
+    logVermelho("          Estoque insuficiente.");
+    logVerde(`          Estoque disponível: ${produto.estoque}`);
+    return;
+  }
+
+  if (itemExistente) {
+    itemExistente.quantidade += quantidade;
+  } else {
+    carrinho.push({
+      produtoId,
+      quantidade,
+    });
+  }
+
+  console.log(`${produto.nome} adicionado ao carrinho.`);
 }
 
 function removerDoCarrinho(): void {
-  // TODO: Remover produto do carrinho
+  logAzul("\n          === REMOVER DO CARRINHO ===");
+
+  if (carrinho.length === 0) {
+    logVerde("\n          O carrinho está vazio.");
+    prompt("          Pressione Enter para voltar...");
+    return;
+  }
+
+  listarCarrinho();
+
+  const produtoId = Number(
+    prompt("\n          Digite o ID do produto que deseja remover: "),
+  );
+
+  if (!Number.isInteger(produtoId) || produtoId <= 0) {
+    console.log("\nErro: informe um ID válido.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  const indice = carrinho.findIndex((item) => item.produtoId === produtoId);
+
+  if (indice === -1) {
+    logVermelho("\n           Erro: produto não encontrado no carrinho.");
+    promptCinza("          Pressione Enter para voltar...");
+    return;
+  }
+
+  const item = carrinho[indice];
+
+  if (!item) {
+    logVermelho("\n          Erro: item não encontrado.");
+    promptCinza("          Pressione Enter para voltar...");
+    return;
+  }
+
+  const produto = verProduto(item.produtoId);
+
+  const confirmar = promptCinza(
+    `\n        Deseja realmente remover ${
+      typeof produto === "string" ? "este produto" : produto.nome
+    } do carrinho? (s/n): `,
+  )
+    .trim()
+    .toLowerCase();
+
+  if (confirmar !== "s") {
+    logVerde("\n          Remoção cancelada.");
+    prompt("         Pressione Enter para voltar...");
+    return;
+  }
+
+  carrinho.splice(indice, 1);
+
+  logVerde("\n          Produto removido do carrinho com sucesso!");
+  prompt("         Pressione Enter para voltar ao menu...");
 }
 
 function alterarQuantidade(): void {
