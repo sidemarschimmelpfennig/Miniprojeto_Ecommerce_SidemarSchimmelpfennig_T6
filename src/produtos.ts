@@ -275,6 +275,61 @@ function editarProduto(): void {
   prompt("\nPressione Enter para voltar ao menu...");
 }
 
+function deletarProduto(): void {
+  console.log("\n=== EXCLUIR PRODUTO ===");
+
+  const id = Number(prompt("Digite o ID do produto: "));
+
+  // Validar ID
+  if (!Number.isInteger(id) || id <= 0) {
+    console.log("\nErro: informe um ID válido.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Buscar índice do produto pelo ID
+  const indice = produtos.findIndex((produto) => produto.id === id);
+
+  if (indice === -1) {
+    console.log("\nErro: produto não encontrado.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  const produto = produtos[indice];
+
+  // Exibir dados atuais
+  console.log("\n=== DADOS DO PRODUTO ===");
+  console.log(`ID: ${produto?.id}`);
+  console.log(`Nome: ${produto?.nome}`);
+  console.log(`Categoria: ${produto?.categoria}`);
+  console.log(`Preço: R$ ${produto?.preco.toFixed(2).replace(".", ",")}`);
+  console.log(`Estoque: ${produto?.estoque}`);
+  console.log(`Criado em: ${produto?.criadoEm}`);
+  console.log(
+    `Atualizado em: ${
+      produto?.atualizadoEm ? produto.atualizadoEm : "Nunca atualizado"
+    }`,
+  );
+
+  // Confirmar exclusão
+  const confirmar = prompt("\nDeseja realmente excluir este produto? (s/n): ")
+    .trim()
+    .toLowerCase();
+
+  if (confirmar !== "s") {
+    console.log("\nExclusão cancelada.");
+    prompt("Pressione Enter para voltar ao menu...");
+    return;
+  }
+
+  // Remover produto
+  produtos.splice(indice, 1);
+
+  console.log("\nProduto excluído com sucesso!");
+  prompt("Pressione Enter para voltar ao menu...");
+}
+
 export {
   verProduto,
   listarProdutos,

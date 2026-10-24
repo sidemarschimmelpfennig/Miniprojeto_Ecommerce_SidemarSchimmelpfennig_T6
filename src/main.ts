@@ -6,7 +6,13 @@ import {
   listarClientes,
   verCliente,
 } from "./clientes";
-import { cadastrarProduto, listarProdutos, verProduto } from "./produtos";
+import {
+  cadastrarProduto,
+  deletarProduto,
+  editarProduto,
+  listarProdutos,
+  verProduto,
+} from "./produtos";
 
 const prompt = promptSync({ sigint: true });
 
@@ -124,9 +130,11 @@ function menuProdutos(): void {
         listarProdutos();
         break;
       case "4":
+        editarProduto();
         break;
 
       case "5":
+        deletarProduto();
         break;
 
       case "0":
