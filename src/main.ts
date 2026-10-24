@@ -28,6 +28,12 @@ import {
 } from "./carrinho";
 import { logAzul, logCinza, logVerde, logVermelho } from "./utils/console";
 import { promptCinza, promptVerde } from "./utils/prompt";
+import {
+  relatorioEstoque,
+  relatorioProdutos,
+  relatorioVendas,
+  relatorioVendasPorCliente,
+} from "./relatorios";
 
 const prompt = promptSync({ sigint: true });
 
@@ -268,26 +274,23 @@ function menuRelatorios(): void {
     logCinza("     4 - Vendas por cliente");
     logVermelho("     0 - Voltar ao menu principal");
 
-    opcao = promptVerde("    Escolha uma opção: ").trim();
+    opcao = promptVerde("     Escolha uma opção: ").trim();
 
     switch (opcao) {
       case "1":
-        adicionarAoCarrinho();
-        promptCinza("          Pressione Enter para continuar...");
+        relatorioProdutos();
         break;
 
       case "2":
-        removerDoCarrinho();
-        promptCinza("           Pressione Enter para continuar...");
+        relatorioEstoque();
         break;
 
       case "3":
-        alterarQuantidade();
-        promptCinza("           Pressione Enter para continuar...");
+        relatorioVendas();
         break;
 
       case "4":
-        listarCarrinho();
+        relatorioVendasPorCliente();
         break;
 
       case "0":

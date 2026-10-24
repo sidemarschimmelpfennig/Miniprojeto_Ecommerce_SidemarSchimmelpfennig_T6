@@ -13,4 +13,4 @@ const promptVermelho = (mensagem: string): string =>
 const promptCinza = (mensagem: string): string =>
   prompt(`\x1b[90m${mensagem}\x1b[0m`);
 
-export { promptAzul, promptCinza, promptVermelho, promptVerde };
+export { promptAzul, promptCinza, promptVermelho, promptVerde, prompt };
