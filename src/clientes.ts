@@ -1,15 +1,42 @@
 import type { Cliente } from "./types";
 import promptSync = require("prompt-sync");
 const prompt = promptSync({ sigint: true });
-import { tratarErro } from "./utils/tratarErro";
 
 const clientes: Cliente[] = [
   {
     id: 1,
-    nome: "João",
+    nome: "João Silva",
     idade: 30,
-    email: "joao@email.com",
-    createdAt: new Date("1995-12-17T03:24:00"),
+    email: "joao.silva@email.com",
+    createdAt: new Date("2025-01-15T10:30:00"),
+  },
+  {
+    id: 2,
+    nome: "Maria Oliveira",
+    idade: 25,
+    email: "maria.oliveira@email.com",
+    createdAt: new Date("2025-02-20T14:15:00"),
+  },
+  {
+    id: 3,
+    nome: "Pedro Santos",
+    idade: 42,
+    email: "pedro.santos@email.com",
+    createdAt: new Date("2025-03-10T09:45:00"),
+  },
+  {
+    id: 4,
+    nome: "Ana Costa",
+    idade: 35,
+    email: "ana.costa@email.com",
+    createdAt: new Date("2025-04-05T16:20:00"),
+  },
+  {
+    id: 5,
+    nome: "Lucas Ferreira",
+    idade: 28,
+    email: "lucas.ferreira@email.com",
+    createdAt: new Date("2025-05-12T11:00:00"),
   },
 ];
 

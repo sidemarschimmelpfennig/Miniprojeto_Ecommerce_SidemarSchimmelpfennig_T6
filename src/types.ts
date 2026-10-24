@@ -10,12 +10,26 @@ type Cliente = {
 };
 
 type Produto = {
+  id: number;
   nome: string;
-  quantidade: number;
+  categoria: string;
+  preco: number;
+  estoque: number;
+  criadoEm: Date | null;
+  atualizadoEm: Date | null;
 };
+
+type ItensCarrinho = {};
 
 type Relatorio = {};
 
-type Pedido = {};
+type Pedido = {
+  id: number;
+  clienteId: number;
+  itens: Produto[];
+  total: number;
+  criadoEm: Date;
+  atualizadoEm: Date | null;
+};
 
 export type { Carrinho, Cliente, Pedido, Produto, Relatorio };
