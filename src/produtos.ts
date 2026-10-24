@@ -109,4 +109,67 @@ function listarProdutos(): void {
   } while (opcao !== "0");
 }
 
-export { verProduto, listarProdutos };
+function cadastrarProduto(): void {
+  console.log("\n=== CADASTRAR PRODUTO ===");
+
+  const nome = prompt("Digite o nome: ").trim();
+  const preco = Number(prompt("Digite o preço: ").replace(",", "."));
+  const estoque = Number(prompt("Digite o estoque: "));
+  const categoria = prompt("Digite a categoria: ").trim();
+
+  // Validar campos
+  if (
+    !nome ||
+    !categoria ||
+    !Number.isFinite(preco) ||
+    preco <= 0 ||
+    !Number.isInteger(estoque) ||
+    estoque < 0
+  ) {
+    console.log(
+      "\nErro: informe nome e categoria, preço maior que zero e estoque inteiro não negativo.",
+    );
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Verificar se já existe um produto com o mesmo nome
+  const produtoExiste = produtos.some(
+    (produto) => produto.nome.trim().toLowerCase() === nome.toLowerCase(),
+  );
+
+  if (produtoExiste) {
+    console.log("\nErro: já existe um produto com esse nome.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Criar produto
+  const novoProduto: Produto = {
+    id:
+      produtos.length > 0
+        ? Math.max(...produtos.map((produto) => produto.id)) + 1
+        : 1,
+    nome,
+    categoria,
+    preco,
+    estoque,
+    criadoEm: new Date(),
+    atualizadoEm: null,
+  };
+
+  produtos.push(novoProduto);
+
+  console.log("\nProduto cadastrado com sucesso!");
+  console.log(`ID: ${novoProduto.id}`);
+  console.log(`Nome: ${novoProduto.nome}`);
+  console.log(`Categoria: ${novoProduto.categoria}`);
+  console.log(`Preço: R$ ${novoProduto.preco.toFixed(2)}`);
+  console.log(`Estoque: ${novoProduto.estoque}`);
+  console.log(`Criado em: ${novoProduto.criadoEm}`);
+  console.log(`Atualizado em: ${novoProduto.atualizadoEm}`);
+
+  prompt("\nPressione Enter para voltar ao menu...");
+}
+
+export { verProduto, listarProdutos, cadastrarProduto };

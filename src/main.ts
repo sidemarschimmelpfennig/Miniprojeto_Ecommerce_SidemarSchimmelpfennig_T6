@@ -6,7 +6,7 @@ import {
   listarClientes,
   verCliente,
 } from "./clientes";
-import { verProduto } from "./produtos";
+import { cadastrarProduto, listarProdutos, verProduto } from "./produtos";
 
 const prompt = promptSync({ sigint: true });
 
@@ -101,9 +101,9 @@ function menuProdutos(): void {
   let opcao: string;
 
   do {
-    console.log("\n=== Clientes ===");
+    console.log("\n=== Produtos ===");
     console.log("   1 - Cadastrar");
-    console.log("   2 - Visualizar Cliente");
+    console.log("   2 - Visualizar Produtos");
     console.log("   3 - Listar");
     console.log("   4 - Editar");
     console.log("   5 - Excluir");
@@ -113,6 +113,7 @@ function menuProdutos(): void {
 
     switch (opcao) {
       case "1":
+        cadastrarProduto();
         break;
       case "2": {
         const id = prompt("Digite o seu id: ");
@@ -120,6 +121,7 @@ function menuProdutos(): void {
         break;
       }
       case "3":
+        listarProdutos();
         break;
       case "4":
         break;
