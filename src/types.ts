@@ -1,35 +1,32 @@
-type Carrinho = {};
-
-type Cliente = {
-  id: number;
-  nome: string;
-  idade: number;
-  email: string;
-  createdAt: Date;
-  updatedAt?: Date | null;
-};
-
-type Produto = {
+export type Produto = {
   id: number;
   nome: string;
   categoria: string;
   preco: number;
   estoque: number;
-  criadoEm: Date | null;
-  atualizadoEm: Date | null;
 };
 
-type ItensCarrinho = {};
+export type Cliente = {
+  id: number;
+  nome: string;
+  email: string;
+};
 
-type Relatorio = {};
+export type ItemCarrinho = {
+  produtoId: number;
+  quantidade: number;
+};
 
-type Pedido = {
+export type Pedido = {
   id: number;
   clienteId: number;
-  itens: Produto[];
+  itens: {
+    produtoId: number;
+    nome: string;
+    quantidade: number;
+    precoUnitario: number;
+    subtotal: number;
+  }[];
   total: number;
-  criadoEm: Date;
-  atualizadoEm: Date | null;
+  data: Date;
 };
-
-export type { Carrinho, Cliente, Pedido, Produto, Relatorio };
