@@ -23,7 +23,6 @@ import {
 import {
   adicionarAoCarrinho,
   alterarQuantidade,
-  calcularTotalCarrinho,
   listarCarrinho,
   removerDoCarrinho,
 } from "./carrinho";
@@ -60,9 +59,7 @@ function menuPrincipal(): void {
         break;
 
       case "4":
-        logAzul("\n=== RELATÓRIOS ===");
-        console.log("Módulo de relatórios ainda não conectado.");
-        promptVerde("Pressione Enter para continuar...");
+        menuRelatorios();
         break;
       case "5":
         menuCarrinho();
@@ -227,7 +224,6 @@ function menuCarrinho(): void {
     logCinza("    2 - Remover produto");
     logCinza("    3 - Alterar quantidade");
     logCinza("    4 - Listar carrinho");
-    logCinza("    5 - Calcular total");
     logVermelho("    0 - Voltar");
 
     opcao = promptVerde("    Escolha uma opção: ").trim();
@@ -252,13 +248,46 @@ function menuCarrinho(): void {
         listarCarrinho();
         break;
 
-      case "5":
-        console.log(
-          `Total do carrinho: R$ ${calcularTotalCarrinho()
-            .toFixed(2)
-            .replace(".", ",")}`,
-        );
-        prompt("          Pressione Enter para continuar...");
+      case "0":
+        break;
+
+      default:
+        console.log("Opção inválida!");
+        prompt("     Pressione Enter para continuar...");
+    }
+  } while (opcao !== "0");
+}
+
+function menuRelatorios(): void {
+  let opcao: string;
+  do {
+    logAzul("\n     === RELATORIOS ===");
+    logCinza("     1 - Relatório de produtos");
+    logCinza("     2 - Relatório de estoque");
+    logCinza("     3 - Relatório de vendas");
+    logCinza("     4 - Vendas por cliente");
+    logVermelho("     0 - Voltar ao menu principal");
+
+    opcao = promptVerde("    Escolha uma opção: ").trim();
+
+    switch (opcao) {
+      case "1":
+        adicionarAoCarrinho();
+        promptCinza("          Pressione Enter para continuar...");
+        break;
+
+      case "2":
+        removerDoCarrinho();
+        promptCinza("           Pressione Enter para continuar...");
+        break;
+
+      case "3":
+        alterarQuantidade();
+        promptCinza("           Pressione Enter para continuar...");
+        break;
+
+      case "4":
+        listarCarrinho();
         break;
 
       case "0":
