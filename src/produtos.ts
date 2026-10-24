@@ -79,4 +79,34 @@ function verProduto(id: number): Produto | string {
   }
 }
 
-export { verProduto };
+function listarProdutos(): void {
+  console.log("\n=== LISTAGEM DE produtoS ===");
+
+  if (produtos.length === 0) {
+    console.log("Nenhum produto cadastrado.");
+  } else {
+    produtos.forEach((produto) => {
+      console.log("--------------------");
+      console.log(`ID: ${produto.id}`);
+      console.log(`Nome: ${produto.nome}`);
+      console.log(`Nome: ${produto.preco}`);
+      console.log(`Nome: ${produto.categoria}`);
+      console.log(`Nome: ${produto.estoque}`);
+      console.log(`Valor Total em Estoque: ${produto.preco * produto.estoque}`);
+    });
+  }
+
+  console.log("\n0 - Voltar");
+
+  let opcao: string;
+
+  do {
+    opcao = prompt("Escolha uma opção: ");
+
+    if (opcao !== "0") {
+      console.log("Opção inválida. Digite 0 para voltar.");
+    }
+  } while (opcao !== "0");
+}
+
+export { verProduto, listarProdutos };
