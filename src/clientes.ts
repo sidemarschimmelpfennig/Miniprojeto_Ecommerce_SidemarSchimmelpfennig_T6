@@ -1,8 +1,12 @@
 import type { Cliente } from "./types";
-import promptSync = require("prompt-sync");
-import { logAzul, logCinza, logVerde, logVermelho } from "./utils/console";
-
-const prompt = promptSync({ sigint: true });
+import {
+  logAmarelo,
+  logAzul,
+  logCinza,
+  logVerde,
+  logVermelho,
+} from "./utils/console";
+import { prompt } from "./utils/prompt";
 
 const clientes: Cliente[] = [
   {
@@ -22,22 +26,30 @@ const clientes: Cliente[] = [
   },
 ];
 
-function cadastrarCliente(): void {
-  console.log("\n          === CADASTRAR CLIENTE ===");
+function validarEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
-  const id = Number(prompt("          Digite o ID: "));
+function cadastrarCliente(): void {
+  logAzul("\n          === CADASTRAR CLIENTE ===");
+
+  const id =
+    clientes.length > 0
+      ? Math.max(...clientes.map((cliente) => cliente.id)) + 1
+      : 1;
+
   const nome = prompt("          Digite o nome: ").trim();
   const email = prompt("          Digite o e-mail: ").trim();
 
-  if (!Number.isInteger(id) || id <= 0 || !nome || !email) {
-    logVermelho("\n     Erro: informe um ID válido, nome e e-mail.");
+  if (!validarEmail(email)) {
+    logVermelho("          Erro: informe um e-mail válido.");
+    prompt("\n          Pressione Enter para voltar ao menu...");
     return;
   }
 
-  const idExiste = clientes.some((cliente) => cliente.id === id);
-
-  if (idExiste) {
-    logVermelho("\n     Erro: já existe um cliente com esse ID.");
+  if (!nome || !email) {
+    logVermelho("\n     Erro: informe o nome e o e-mail.");
+    prompt("\n          Pressione Enter para voltar ao menu...");
     return;
   }
 
@@ -47,6 +59,7 @@ function cadastrarCliente(): void {
 
   if (emailExiste) {
     logVermelho("\n     Erro: já existe um cliente com esse e-mail.");
+    prompt("\n          Pressione Enter para voltar ao menu...");
     return;
   }
 
@@ -62,22 +75,26 @@ function cadastrarCliente(): void {
   logCinza(`         ID: ${novoCliente.id}`);
   logCinza(`         Nome: ${novoCliente.nome}`);
   logCinza(`         E-mail: ${novoCliente.email}`);
+  prompt("\n          Pressione Enter para voltar ao menu...");
 }
 
-function listarClientes(): void {
-  logAzul("\n     === LISTAGEM DE CLIENTES ===");
+function listarClientes(): Cliente[] {
+  return clientes;
+}
 
-  if (clientes.length === 0) {
-    logVerde("     Nenhum cliente cadastrado.");
-    return;
+function listagemClientes(): void {
+  const clients: Cliente[] = listarClientes();
+  logAzul("\n           ===== Listar clientes =====");
+  if (clients.length <= 0) {
+    logAmarelo("           Nenhum pedido encontrado !");
   }
-
-  clientes.forEach((cliente) => {
-    logCinza("     --------------------");
-    console.log(`    ID: ${cliente.id}`);
-    console.log(`    Nome: ${cliente.nome}`);
-    console.log(`    E-mail: ${cliente.email}`);
+  clients.forEach((cliente) => {
+    console.log("            ===================================");
+    console.log(`            ID : ${cliente.id}`);
+    console.log(`            Nome: ${cliente.nome}`);
+    console.log(`            Email: ${cliente.email} `);
   });
+  prompt("\n            Pressione Enter para voltar ao menu...");
 }
 
 function buscarClientePorId(id: number): Cliente | undefined {
@@ -93,7 +110,12 @@ function buscarClientePorId(id: number): Cliente | undefined {
   console.log(`     Nome: ${cliente.nome}`);
   console.log(`     E-mail: ${cliente.email}`);
 
-  return cliente;
+  prompt("\n          Pressione Enter para voltar ao menu...");
 }
 
-export { cadastrarCliente, listarClientes, buscarClientePorId };
+export {
+  cadastrarCliente,
+  listarClientes,
+  buscarClientePorId,
+  listagemClientes,
+};

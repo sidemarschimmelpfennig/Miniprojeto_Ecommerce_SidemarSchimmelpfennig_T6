@@ -1,13 +1,8 @@
+import { finalizarPedido } from "./pedidos";
 import { verProduto } from "./produtos";
 import type { ItemCarrinho } from "./types";
-import {
-  logAmarelo,
-  logAzul,
-  logCinza,
-  logVerde,
-  logVermelho,
-} from "./utils/console";
-import { promptCinza } from "./utils/prompt";
+import { logAmarelo, logAzul, logVerde, logVermelho } from "./utils/console";
+import { promptCinza, promptVerde } from "./utils/prompt";
 import promptSync = require("prompt-sync");
 const prompt = promptSync({ sigint: true });
 
@@ -50,7 +45,9 @@ function adicionarAoCarrinho(): void {
     });
   }
 
-  logVerde(`     ${produto.nome} adicionado ao carrinho.`);
+  logVerde(`          ${produto.nome} adicionado ao carrinho.`);
+  prompt("          Pressione Enter para voltar...");
+  return;
 }
 
 function removerDoCarrinho(): void {
@@ -121,6 +118,7 @@ function alterarQuantidade(): void {
 
   if (!item) {
     logVermelho("          Produto não encontrado no carrinho.");
+    prompt("          Pressione Enter para voltar...");
     return;
   }
 
@@ -128,6 +126,7 @@ function alterarQuantidade(): void {
 
   if (typeof produto === "string") {
     logVermelho("          Produto não encontrado no catálogo.");
+    prompt("          Pressione Enter para voltar...");
     return;
   }
 
@@ -149,51 +148,8 @@ function alterarQuantidade(): void {
   logVerde("          Quantidade alterada com sucesso!");
 }
 
-function listarCarrinho(): void {
-  logAzul("\n          === CARRINHO DE COMPRAS ===");
-
-  if (carrinho.length === 0) {
-    console.log("\n          O carrinho está vazio.");
-    prompt("\n         Pressione Enter para voltar ao menu...");
-    return;
-  }
-
-  logVerde("\n          === ITENS DO CARRINHO ===");
-
-  for (const item of carrinho) {
-    const produto = verProduto(item.produtoId);
-
-    if (typeof produto === "string") {
-      console.log(
-        `\n           Erro: produto ID ${item.produtoId} não encontrado.`,
-      );
-      continue;
-    }
-
-    const subtotal = produto.preco * item.quantidade;
-
-    console.log("\n          ------------------------------");
-    console.log(`          ID: ${produto.id}`);
-    console.log(`          Produto: ${produto.nome}`);
-    console.log(`          Categoria: ${produto.categoria}`);
-    console.log(
-      `          Preço unitário: R$ ${produto.preco.toFixed(2).replace(".", ",")}`,
-    );
-    console.log(`          Quantidade: ${item.quantidade}`);
-    console.log(
-      `          Subtotal: R$ ${subtotal.toFixed(2).replace(".", ",")}`,
-    );
-  }
-
-  const total = calcularTotalCarrinho();
-
-  logAmarelo("\n          ==============================");
-  logAmarelo(
-    `            TOTAL DA COMPRA: R$ ${total.toFixed(2).replace(".", ",")}`,
-  );
-  logAmarelo("          ==============================");
-
-  prompt("\n          Pressione Enter para voltar ao menu...");
+function listarCarrinho(): ItemCarrinho[] {
+  return carrinho;
 }
 
 function calcularSubtotal(produtoId: number): number {
@@ -222,6 +178,78 @@ function calcularTotalCarrinho(): number {
   return total;
 }
 
+function mostrarCarrinho(): void {
+  logAzul("\n          === CARRINHO DE COMPRAS ===");
+  const carrinho = listarCarrinho();
+  if (carrinho.length === 0) {
+    logVermelho("\n          O carrinho está vazio.");
+    promptCinza("\n          Pressione Enter para voltar ao menu...");
+    return;
+  }
+
+  logVerde("\n          === ITENS DO CARRINHO ===");
+
+  for (const item of carrinho) {
+    const produto = verProduto(item.produtoId);
+
+    if (typeof produto === "string") {
+      logVermelho(
+        `\n          Erro: produto ID ${item.produtoId} não encontrado.`,
+      );
+      continue;
+    }
+
+    const subtotal = produto.preco * item.quantidade;
+
+    console.log("\n          ------------------------------");
+    console.log(`          ID: ${produto.id}`);
+    console.log(`          Produto: ${produto.nome}`);
+    console.log(`          Categoria: ${produto.categoria}`);
+    console.log(
+      `          Preço unitário: R$ ${produto.preco.toFixed(2).replace(".", ",")}`,
+    );
+    console.log(`          Quantidade: ${item.quantidade}`);
+    console.log(
+      `          Subtotal: R$ ${subtotal.toFixed(2).replace(".", ",")}`,
+    );
+  }
+
+  const total = calcularTotalCarrinho();
+
+  logAmarelo("\n          ==============================");
+  logAmarelo(
+    `            TOTAL DA COMPRA: R$ ${total.toFixed(2).replace(".", ",")}`,
+  );
+  logAmarelo("          ==============================");
+
+  console.log("\n          1 - Finalizar pedido");
+  logVermelho("          0 - Voltar");
+
+  const opcao = promptVerde("\n          Escolha uma opção: ").trim();
+
+  switch (opcao) {
+    case "1": {
+      const clienteId = Number(
+        promptVerde("          Digite o ID do cliente: "),
+      );
+
+      finalizarPedido(clienteId);
+      break;
+    }
+
+    case "0":
+      break;
+
+    default:
+      logVermelho("          Opção inválida.");
+      promptCinza("          Pressione Enter para continuar...");
+  }
+}
+
+function limparCarrinho(): void {
+  carrinho.length = 0;
+}
+
 export {
   adicionarAoCarrinho,
   removerDoCarrinho,
@@ -229,4 +257,6 @@ export {
   listarCarrinho,
   calcularSubtotal,
   calcularTotalCarrinho,
+  mostrarCarrinho,
+  limparCarrinho,
 };

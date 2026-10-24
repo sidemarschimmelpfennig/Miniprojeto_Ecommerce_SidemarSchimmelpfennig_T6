@@ -4,6 +4,7 @@ import {
   cadastrarCliente,
   listarClientes,
   buscarClientePorId,
+  listagemClientes,
 } from "./clientes";
 
 import {
@@ -15,15 +16,15 @@ import {
 } from "./produtos";
 
 import {
-  listarPedidos,
   listarPedidosPorCliente,
   buscarPedidoPorId,
+  listagemPedidos,
 } from "./pedidos";
 
 import {
   adicionarAoCarrinho,
   alterarQuantidade,
-  listarCarrinho,
+  mostrarCarrinho,
   removerDoCarrinho,
 } from "./carrinho";
 import { logAzul, logCinza, logVerde, logVermelho } from "./utils/console";
@@ -118,7 +119,7 @@ function menuClientes(): void {
       }
 
       case "3":
-        listarClientes();
+        listagemClientes();
         break;
 
       case "0":
@@ -183,18 +184,17 @@ function menuPedidos(): void {
   let opcao: string;
 
   do {
-    console.log("\n=== PEDIDOS ===");
+    logAzul("\n    === PEDIDOS ===");
     console.log("    1 - Listar todos os pedidos");
     console.log("    2 - Buscar pedido por ID");
     console.log("    3 - Listar pedidos por cliente");
-    console.log("    0 - Voltar");
+    logVermelho("    0 - Voltar");
 
     opcao = prompt("Escolha uma opção: ").trim();
 
     switch (opcao) {
       case "1":
-        console.log(listarPedidos());
-        prompt("Pressione Enter para continuar...");
+        listagemPedidos();
         break;
 
       case "2": {
@@ -215,7 +215,7 @@ function menuPedidos(): void {
         break;
 
       default:
-        console.log("Opção inválida!");
+        logVermelho("Opção inválida!");
         prompt("Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
@@ -237,29 +237,26 @@ function menuCarrinho(): void {
     switch (opcao) {
       case "1":
         adicionarAoCarrinho();
-        promptCinza("          Pressione Enter para continuar...");
         break;
 
       case "2":
         removerDoCarrinho();
-        promptCinza("           Pressione Enter para continuar...");
         break;
 
       case "3":
         alterarQuantidade();
-        promptCinza("           Pressione Enter para continuar...");
         break;
 
       case "4":
-        listarCarrinho();
+        mostrarCarrinho();
         break;
 
       case "0":
         break;
 
       default:
-        console.log("Opção inválida!");
-        prompt("     Pressione Enter para continuar...");
+        logVermelho("Opção inválida!");
+        promptCinza("     Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
 }

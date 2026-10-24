@@ -187,7 +187,7 @@ function editarProduto(): void {
     console.log(
       "\nErro: nome e categoria são obrigatórios, preço deve ser maior que zero e estoque deve ser um inteiro não negativo.",
     );
-    prompt("Pressione Enter para voltar...");
+    prompt("           Pressione Enter para voltar...");
     return;
   }
 

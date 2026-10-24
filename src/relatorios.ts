@@ -1,5 +1,4 @@
 import { listarProdutos } from "./produtos";
-import { Produto } from "./types";
 import { logAmarelo, logAzul, logVerde } from "./utils/console";
 import { prompt } from "./utils/prompt";
 
