@@ -230,27 +230,27 @@ function menuCarrinho(): void {
     logCinza("    5 - Calcular total");
     logVermelho("    0 - Voltar");
 
-    opcao = promptVerde("     Escolha uma opção: ").trim();
+    opcao = promptVerde("    Escolha uma opção: ").trim();
 
     switch (opcao) {
       case "1":
         adicionarAoCarrinho();
-        promptCinza("    Pressione Enter para continuar...");
+        promptCinza("          Pressione Enter para continuar...");
         break;
 
       case "2":
         removerDoCarrinho();
-        promptCinza("    Pressione Enter para continuar...");
+        promptCinza("           Pressione Enter para continuar...");
         break;
 
       case "3":
         alterarQuantidade();
-        prompt("     Pressione Enter para continuar...");
+        promptCinza("           Pressione Enter para continuar...");
         break;
 
       case "4":
         listarCarrinho();
-        prompt("     Pressione Enter para continuar...");
+        prompt("          Pressione Enter para continuar...");
         break;
 
       case "5":
@@ -259,7 +259,7 @@ function menuCarrinho(): void {
             .toFixed(2)
             .replace(".", ",")}`,
         );
-        prompt("Pressione Enter para continuar...");
+        prompt("          Pressione Enter para continuar...");
         break;
 
       case "0":
@@ -267,7 +267,7 @@ function menuCarrinho(): void {
 
       default:
         console.log("Opção inválida!");
-        prompt("Pressione Enter para continuar...");
+        prompt("     Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
 }

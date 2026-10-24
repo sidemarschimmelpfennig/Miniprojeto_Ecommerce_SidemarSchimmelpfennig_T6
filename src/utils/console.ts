@@ -10,4 +10,7 @@ const logVermelho = (mensagem: string): void =>
 const logCinza = (mensagem: string): void =>
   console.log(`\x1b[90m${mensagem}\x1b[0m`);
 
-export { logAzul, logCinza, logVerde, logVermelho };
+const logAmarelo = (mensagem: string): void =>
+  console.log(`\x1b[33m${mensagem}\x1b[0m`);
+
+export { logAzul, logCinza, logVerde, logVermelho, logAmarelo };

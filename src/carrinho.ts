@@ -1,6 +1,12 @@
 import { verProduto } from "./produtos";
 import type { ItemCarrinho } from "./types";
-import { logAzul, logCinza, logVerde, logVermelho } from "./utils/console";
+import {
+  logAmarelo,
+  logAzul,
+  logCinza,
+  logVerde,
+  logVermelho,
+} from "./utils/console";
 import { promptCinza } from "./utils/prompt";
 import promptSync = require("prompt-sync");
 const prompt = promptSync({ sigint: true });
@@ -21,7 +27,7 @@ function adicionarAoCarrinho(): void {
   const quantidade = Number(prompt("          Digite a quantidade: "));
 
   if (!Number.isInteger(quantidade) || quantidade <= 0) {
-    console.log("Quantidade inválida.");
+    logVermelho("     Quantidade inválida.");
     return;
   }
 
@@ -44,7 +50,7 @@ function adicionarAoCarrinho(): void {
     });
   }
 
-  console.log(`${produto.nome} adicionado ao carrinho.`);
+  logVerde(`     ${produto.nome} adicionado ao carrinho.`);
 }
 
 function removerDoCarrinho(): void {
@@ -107,9 +113,41 @@ function removerDoCarrinho(): void {
 }
 
 function alterarQuantidade(): void {
-  // TODO: Alterar quantidade de um produto
-}
+  logAzul("\n          === ALTERAR QUANTIDADE ===");
 
+  const produtoId = Number(prompt("          Digite o ID do produto: "));
+
+  const item = carrinho.find((item) => item.produtoId === produtoId);
+
+  if (!item) {
+    logVermelho("          Produto não encontrado no carrinho.");
+    return;
+  }
+
+  const produto = verProduto(produtoId);
+
+  if (typeof produto === "string") {
+    logVermelho("          Produto não encontrado no catálogo.");
+    return;
+  }
+
+  const quantidade = Number(prompt("          Digite a nova quantidade: "));
+
+  if (!Number.isInteger(quantidade) || quantidade <= 0) {
+    logVermelho("          Quantidade inválida.");
+    return;
+  }
+
+  if (quantidade > produto.estoque) {
+    logVermelho("          Estoque insuficiente.");
+    logAmarelo(`          Estoque disponível: ${produto.estoque}`);
+    return;
+  }
+
+  item.quantidade = quantidade;
+
+  logVerde("          Quantidade alterada com sucesso!");
+}
 function listarCarrinho(): void {
   // TODO: Listar produtos do carrinho
 }
