@@ -250,7 +250,6 @@ function menuCarrinho(): void {
 
       case "4":
         listarCarrinho();
-        prompt("          Pressione Enter para continuar...");
         break;
 
       case "5":

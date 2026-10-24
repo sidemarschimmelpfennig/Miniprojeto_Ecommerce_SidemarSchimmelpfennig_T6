@@ -148,18 +148,78 @@ function alterarQuantidade(): void {
 
   logVerde("          Quantidade alterada com sucesso!");
 }
+
 function listarCarrinho(): void {
-  // TODO: Listar produtos do carrinho
+  logAzul("\n          === CARRINHO DE COMPRAS ===");
+
+  if (carrinho.length === 0) {
+    console.log("\n          O carrinho está vazio.");
+    prompt("\n         Pressione Enter para voltar ao menu...");
+    return;
+  }
+
+  logVerde("\n          === ITENS DO CARRINHO ===");
+
+  for (const item of carrinho) {
+    const produto = verProduto(item.produtoId);
+
+    if (typeof produto === "string") {
+      console.log(
+        `\n           Erro: produto ID ${item.produtoId} não encontrado.`,
+      );
+      continue;
+    }
+
+    const subtotal = produto.preco * item.quantidade;
+
+    console.log("\n          ------------------------------");
+    console.log(`          ID: ${produto.id}`);
+    console.log(`          Produto: ${produto.nome}`);
+    console.log(`          Categoria: ${produto.categoria}`);
+    console.log(
+      `          Preço unitário: R$ ${produto.preco.toFixed(2).replace(".", ",")}`,
+    );
+    console.log(`          Quantidade: ${item.quantidade}`);
+    console.log(
+      `          Subtotal: R$ ${subtotal.toFixed(2).replace(".", ",")}`,
+    );
+  }
+
+  const total = calcularTotalCarrinho();
+
+  logAmarelo("\n          ==============================");
+  logAmarelo(
+    `            TOTAL DA COMPRA: R$ ${total.toFixed(2).replace(".", ",")}`,
+  );
+  logAmarelo("          ==============================");
+
+  prompt("\n          Pressione Enter para voltar ao menu...");
 }
 
-function calcularSubtotal(): number {
-  // TODO: Calcular subtotal de um produto
-  return 0;
+function calcularSubtotal(produtoId: number): number {
+  const item = carrinho.find((item) => item.produtoId === produtoId);
+
+  if (!item) {
+    return 0;
+  }
+
+  const produto = verProduto(produtoId);
+
+  if (typeof produto === "string") {
+    return 0;
+  }
+
+  return produto.preco * item.quantidade;
 }
 
 function calcularTotalCarrinho(): number {
-  // TODO: Calcular valor total do carrinho
-  return 0;
+  let total = 0;
+
+  for (const item of carrinho) {
+    total += calcularSubtotal(item.produtoId);
+  }
+
+  return total;
 }
 
 export {
