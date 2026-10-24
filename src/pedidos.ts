@@ -10,7 +10,6 @@ import {
 import {
   logAmarelo,
   logAzul,
-  logCinza,
   logVerde,
   logVermelho,
 } from "./utils/console";
@@ -200,10 +199,27 @@ function buscarPedidoPorId(id: number): Pedido | undefined {
   return pedidos.find((pedido) => pedido.id === id);
 }
 
+function exibirDetalhesPedido(pedido: Pedido): void {
+  console.log("\n          ----------------------------------------");
+  logVerde(`          Pedido ID: ${pedido.id}`);
+  console.log(`          Cliente ID: ${pedido.clienteId}`);
+  console.log(`          Data: ${pedido.data.toLocaleString("pt-BR")}`);
+  console.log("          Itens do Pedido:");
+  pedido.itens.forEach((item) => {
+    console.log(
+      `            - [ID ${item.produtoId}] ${item.nome} | Qtd: ${item.quantidade} | Unit: R$ ${item.precoUnitario.toFixed(2).replace(".", ",")} | Subtotal: R$ ${item.subtotal.toFixed(2).replace(".", ",")}`,
+    );
+  });
+  logAmarelo(`          Total: R$ ${pedido.total.toFixed(2).replace(".", ",")}`);
+  console.log("          ----------------------------------------");
+}
+
 export {
   finalizarPedido,
   listarPedidos,
   listarPedidosPorCliente,
   buscarPedidoPorId,
   listagemPedidos,
+  exibirDetalhesPedido,
 };
+

@@ -19,6 +19,7 @@ import {
   listarPedidosPorCliente,
   buscarPedidoPorId,
   listagemPedidos,
+  exibirDetalhesPedido,
 } from "./pedidos";
 
 import {
@@ -199,14 +200,33 @@ function menuPedidos(): void {
 
       case "2": {
         const id = Number(prompt("Digite o ID do pedido: "));
-        console.log(buscarPedidoPorId(id));
+        if (!Number.isInteger(id) || id <= 0) {
+          logVermelho("Erro: informe um ID válido.");
+        } else {
+          const pedido = buscarPedidoPorId(id);
+          if (!pedido) {
+            logVermelho("Pedido não encontrado.");
+          } else {
+            exibirDetalhesPedido(pedido);
+          }
+        }
         prompt("Pressione Enter para continuar...");
         break;
       }
 
       case "3": {
         const clienteId = Number(prompt("Digite o ID do cliente: "));
-        console.log(listarPedidosPorCliente(clienteId));
+        if (!Number.isInteger(clienteId) || clienteId <= 0) {
+          logVermelho("Erro: informe um ID de cliente válido.");
+        } else {
+          const pedidosCliente = listarPedidosPorCliente(clienteId);
+          if (pedidosCliente.length === 0) {
+            logAmarelo("Nenhum pedido encontrado para este cliente.");
+          } else {
+            logAzul(`\n          === PEDIDOS DO CLIENTE #${clienteId} ===`);
+            pedidosCliente.forEach((pedido) => exibirDetalhesPedido(pedido));
+          }
+        }
         prompt("Pressione Enter para continuar...");
         break;
       }
