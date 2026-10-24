@@ -1,5 +1,6 @@
 import type { Produto } from "./types";
 import promptSync = require("prompt-sync");
+
 const prompt = promptSync({ sigint: true });
 
 const produtos: Produto[] = [
@@ -9,8 +10,6 @@ const produtos: Produto[] = [
     categoria: "Periféricos",
     preco: 199.9,
     estoque: 10,
-    criadoEm: new Date("2026-10-01T10:00:00"),
-    atualizadoEm: null,
   },
   {
     id: 2,
@@ -18,8 +17,6 @@ const produtos: Produto[] = [
     categoria: "Periféricos",
     preco: 89.9,
     estoque: 15,
-    criadoEm: new Date("2026-10-02T14:30:00"),
-    atualizadoEm: null,
   },
   {
     id: 3,
@@ -27,8 +24,6 @@ const produtos: Produto[] = [
     categoria: "Monitores",
     preco: 899.9,
     estoque: 5,
-    criadoEm: new Date("2026-10-03T09:15:00"),
-    atualizadoEm: null,
   },
   {
     id: 4,
@@ -36,8 +31,6 @@ const produtos: Produto[] = [
     categoria: "Áudio",
     preco: 149.9,
     estoque: 8,
-    criadoEm: new Date("2026-10-04T11:45:00"),
-    atualizadoEm: null,
   },
   {
     id: 5,
@@ -45,8 +38,6 @@ const produtos: Produto[] = [
     categoria: "Acessórios",
     preco: 129.9,
     estoque: 12,
-    criadoEm: new Date("2026-10-05T16:20:00"),
-    atualizadoEm: null,
   },
 ];
 
@@ -58,7 +49,7 @@ function verProduto(id: number): Produto | string {
   }
 
   console.log("\n=== ERRO ===");
-  console.log("produto não encontrado.");
+  console.log("Produto não encontrado.");
   console.log("1 - Tentar novamente");
   console.log("0 - Voltar ao menu anterior");
 
@@ -66,8 +57,14 @@ function verProduto(id: number): Produto | string {
 
   switch (opcao) {
     case "1": {
-      const id = prompt("Digite o id do produto: ");
-      return verProduto(Number(id));
+      const novoId = Number(prompt("Digite o ID do produto: "));
+
+      if (!Number.isInteger(novoId) || novoId <= 0) {
+        console.log("\nErro: informe um ID válido.");
+        return "Operação cancelada";
+      }
+
+      return verProduto(novoId);
     }
 
     case "0":
@@ -80,7 +77,7 @@ function verProduto(id: number): Produto | string {
 }
 
 function listarProdutos(): void {
-  console.log("\n=== LISTAGEM DE produtoS ===");
+  console.log("\n=== LISTAGEM DE PRODUTOS ===");
 
   if (produtos.length === 0) {
     console.log("Nenhum produto cadastrado.");
@@ -89,12 +86,9 @@ function listarProdutos(): void {
       console.log("--------------------");
       console.log(`ID: ${produto.id}`);
       console.log(`Nome: ${produto.nome}`);
-      console.log(`Nome: ${produto.preco}`);
-      console.log(`Nome: ${produto.categoria}`);
-      console.log(`Nome: ${produto.estoque}`);
-      console.log(`Criado em: ${produto.criadoEm}`);
-      console.log(`Atualizado em: ${produto.atualizadoEm}`);
-      console.log(`Valor Total em Estoque: ${produto.preco * produto.estoque}`);
+      console.log(`Categoria: ${produto.categoria}`);
+      console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
+      console.log(`Estoque: ${produto.estoque}`);
     });
   }
 
@@ -119,7 +113,6 @@ function cadastrarProduto(): void {
   const estoque = Number(prompt("Digite o estoque: "));
   const categoria = prompt("Digite a categoria: ").trim();
 
-  // Validar campos
   if (
     !nome ||
     !categoria ||
@@ -135,9 +128,8 @@ function cadastrarProduto(): void {
     return;
   }
 
-  // Verificar se já existe um produto com o mesmo nome
   const produtoExiste = produtos.some(
-    (produto) => produto.nome.trim().toLowerCase() === nome.toLowerCase(),
+    (produto) => produto.nome.toLowerCase() === nome.toLowerCase(),
   );
 
   if (produtoExiste) {
@@ -146,7 +138,6 @@ function cadastrarProduto(): void {
     return;
   }
 
-  // Criar produto
   const novoProduto: Produto = {
     id:
       produtos.length > 0
@@ -156,8 +147,6 @@ function cadastrarProduto(): void {
     categoria,
     preco,
     estoque,
-    criadoEm: new Date(),
-    atualizadoEm: null,
   };
 
   produtos.push(novoProduto);
@@ -166,10 +155,8 @@ function cadastrarProduto(): void {
   console.log(`ID: ${novoProduto.id}`);
   console.log(`Nome: ${novoProduto.nome}`);
   console.log(`Categoria: ${novoProduto.categoria}`);
-  console.log(`Preço: R$ ${novoProduto.preco.toFixed(2)}`);
+  console.log(`Preço: R$ ${novoProduto.preco.toFixed(2).replace(".", ",")}`);
   console.log(`Estoque: ${novoProduto.estoque}`);
-  console.log(`Criado em: ${novoProduto.criadoEm}`);
-  console.log(`Atualizado em: ${novoProduto.atualizadoEm}`);
 
   prompt("\nPressione Enter para voltar ao menu...");
 }
@@ -179,14 +166,12 @@ function editarProduto(): void {
 
   const id = Number(prompt("Digite o ID do produto: "));
 
-  // Validar ID
   if (!Number.isInteger(id) || id <= 0) {
     console.log("\nErro: informe um ID válido.");
     prompt("Pressione Enter para voltar...");
     return;
   }
 
-  // Buscar produto pelo ID
   const produto = produtos.find((item) => item.id === id);
 
   if (!produto) {
@@ -195,31 +180,20 @@ function editarProduto(): void {
     return;
   }
 
-  // Exibir dados atuais
   console.log("\n=== DADOS ATUAIS DO PRODUTO ===");
   console.log(`ID: ${produto.id}`);
   console.log(`Nome: ${produto.nome}`);
   console.log(`Categoria: ${produto.categoria}`);
   console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
   console.log(`Estoque: ${produto.estoque}`);
-  console.log(`Criado em: ${produto.criadoEm}`);
-  console.log(
-    `Atualizado em: ${
-      produto.atualizadoEm
-        ? produto.atualizadoEm.toLocaleString("pt-BR")
-        : "Nunca atualizado"
-    }`,
-  );
 
   console.log("\nPressione Enter para manter o valor atual.");
 
-  // Solicitar novos valores
   const nome = prompt("Novo nome: ").trim();
   const categoria = prompt("Nova categoria: ").trim();
   const precoInput = prompt("Novo preço: ").trim();
   const estoqueInput = prompt("Novo estoque: ").trim();
 
-  // Manter os valores atuais se os campos ficarem vazios
   const novoNome = nome || produto.nome;
   const novaCategoria = categoria || produto.categoria;
   const novoPreco =
@@ -227,7 +201,6 @@ function editarProduto(): void {
   const novoEstoque =
     estoqueInput === "" ? produto.estoque : Number(estoqueInput);
 
-  // Validar novos dados
   if (
     !novoNome ||
     !novaCategoria ||
@@ -243,11 +216,10 @@ function editarProduto(): void {
     return;
   }
 
-  // Verificar se outro produto possui o mesmo nome
   const nomeExiste = produtos.some(
     (item) =>
       item.id !== produto.id &&
-      item.nome.trim().toLowerCase() === novoNome.toLowerCase(),
+      item.nome.toLowerCase() === novoNome.toLowerCase(),
   );
 
   if (nomeExiste) {
@@ -256,12 +228,10 @@ function editarProduto(): void {
     return;
   }
 
-  // Atualizar produto
   produto.nome = novoNome;
   produto.categoria = novaCategoria;
   produto.preco = novoPreco;
   produto.estoque = novoEstoque;
-  produto.atualizadoEm = new Date();
 
   console.log("\nProduto atualizado com sucesso!");
   console.log(`ID: ${produto.id}`);
@@ -269,8 +239,6 @@ function editarProduto(): void {
   console.log(`Categoria: ${produto.categoria}`);
   console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
   console.log(`Estoque: ${produto.estoque}`);
-  console.log(`Criado em: ${produto.criadoEm}`);
-  console.log(`Atualizado em: ${produto.atualizadoEm}`);
 
   prompt("\nPressione Enter para voltar ao menu...");
 }
@@ -280,14 +248,12 @@ function deletarProduto(): void {
 
   const id = Number(prompt("Digite o ID do produto: "));
 
-  // Validar ID
   if (!Number.isInteger(id) || id <= 0) {
     console.log("\nErro: informe um ID válido.");
     prompt("Pressione Enter para voltar...");
     return;
   }
 
-  // Buscar índice do produto pelo ID
   const indice = produtos.findIndex((produto) => produto.id === id);
 
   if (indice === -1) {
@@ -298,21 +264,19 @@ function deletarProduto(): void {
 
   const produto = produtos[indice];
 
-  // Exibir dados atuais
-  console.log("\n=== DADOS DO PRODUTO ===");
-  console.log(`ID: ${produto?.id}`);
-  console.log(`Nome: ${produto?.nome}`);
-  console.log(`Categoria: ${produto?.categoria}`);
-  console.log(`Preço: R$ ${produto?.preco.toFixed(2).replace(".", ",")}`);
-  console.log(`Estoque: ${produto?.estoque}`);
-  console.log(`Criado em: ${produto?.criadoEm}`);
-  console.log(
-    `Atualizado em: ${
-      produto?.atualizadoEm ? produto.atualizadoEm : "Nunca atualizado"
-    }`,
-  );
+  if (!produto) {
+    console.log("\nErro: produto não encontrado.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
 
-  // Confirmar exclusão
+  console.log("\n=== DADOS DO PRODUTO ===");
+  console.log(`ID: ${produto.id}`);
+  console.log(`Nome: ${produto.nome}`);
+  console.log(`Categoria: ${produto.categoria}`);
+  console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
+  console.log(`Estoque: ${produto.estoque}`);
+
   const confirmar = prompt("\nDeseja realmente excluir este produto? (s/n): ")
     .trim()
     .toLowerCase();
@@ -323,7 +287,6 @@ function deletarProduto(): void {
     return;
   }
 
-  // Remover produto
   produtos.splice(indice, 1);
 
   console.log("\nProduto excluído com sucesso!");
