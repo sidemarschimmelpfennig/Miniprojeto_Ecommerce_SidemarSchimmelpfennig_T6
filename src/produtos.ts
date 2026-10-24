@@ -92,6 +92,8 @@ function listarProdutos(): void {
       console.log(`Nome: ${produto.preco}`);
       console.log(`Nome: ${produto.categoria}`);
       console.log(`Nome: ${produto.estoque}`);
+      console.log(`Criado em: ${produto.criadoEm}`);
+      console.log(`Atualizado em: ${produto.atualizadoEm}`);
       console.log(`Valor Total em Estoque: ${produto.preco * produto.estoque}`);
     });
   }
@@ -172,4 +174,111 @@ function cadastrarProduto(): void {
   prompt("\nPressione Enter para voltar ao menu...");
 }
 
-export { verProduto, listarProdutos, cadastrarProduto };
+function editarProduto(): void {
+  console.log("\n=== EDITAR PRODUTO ===");
+
+  const id = Number(prompt("Digite o ID do produto: "));
+
+  // Validar ID
+  if (!Number.isInteger(id) || id <= 0) {
+    console.log("\nErro: informe um ID válido.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Buscar produto pelo ID
+  const produto = produtos.find((item) => item.id === id);
+
+  if (!produto) {
+    console.log("\nErro: produto não encontrado.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Exibir dados atuais
+  console.log("\n=== DADOS ATUAIS DO PRODUTO ===");
+  console.log(`ID: ${produto.id}`);
+  console.log(`Nome: ${produto.nome}`);
+  console.log(`Categoria: ${produto.categoria}`);
+  console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
+  console.log(`Estoque: ${produto.estoque}`);
+  console.log(`Criado em: ${produto.criadoEm}`);
+  console.log(
+    `Atualizado em: ${
+      produto.atualizadoEm
+        ? produto.atualizadoEm.toLocaleString("pt-BR")
+        : "Nunca atualizado"
+    }`,
+  );
+
+  console.log("\nPressione Enter para manter o valor atual.");
+
+  // Solicitar novos valores
+  const nome = prompt("Novo nome: ").trim();
+  const categoria = prompt("Nova categoria: ").trim();
+  const precoInput = prompt("Novo preço: ").trim();
+  const estoqueInput = prompt("Novo estoque: ").trim();
+
+  // Manter os valores atuais se os campos ficarem vazios
+  const novoNome = nome || produto.nome;
+  const novaCategoria = categoria || produto.categoria;
+  const novoPreco =
+    precoInput === "" ? produto.preco : Number(precoInput.replace(",", "."));
+  const novoEstoque =
+    estoqueInput === "" ? produto.estoque : Number(estoqueInput);
+
+  // Validar novos dados
+  if (
+    !novoNome ||
+    !novaCategoria ||
+    !Number.isFinite(novoPreco) ||
+    novoPreco <= 0 ||
+    !Number.isInteger(novoEstoque) ||
+    novoEstoque < 0
+  ) {
+    console.log(
+      "\nErro: nome e categoria são obrigatórios, preço deve ser maior que zero e estoque deve ser um inteiro não negativo.",
+    );
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Verificar se outro produto possui o mesmo nome
+  const nomeExiste = produtos.some(
+    (item) =>
+      item.id !== produto.id &&
+      item.nome.trim().toLowerCase() === novoNome.toLowerCase(),
+  );
+
+  if (nomeExiste) {
+    console.log("\nErro: já existe outro produto com esse nome.");
+    prompt("Pressione Enter para voltar...");
+    return;
+  }
+
+  // Atualizar produto
+  produto.nome = novoNome;
+  produto.categoria = novaCategoria;
+  produto.preco = novoPreco;
+  produto.estoque = novoEstoque;
+  produto.atualizadoEm = new Date();
+
+  console.log("\nProduto atualizado com sucesso!");
+  console.log(`ID: ${produto.id}`);
+  console.log(`Nome: ${produto.nome}`);
+  console.log(`Categoria: ${produto.categoria}`);
+  console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
+  console.log(`Estoque: ${produto.estoque}`);
+  console.log(`Criado em: ${produto.criadoEm}`);
+  console.log(`Atualizado em: ${produto.atualizadoEm}`);
+
+  prompt("\nPressione Enter para voltar ao menu...");
+}
+
+export {
+  verProduto,
+  listarProdutos,
+  cadastrarProduto,
+  editarProduto,
+  deletarProduto,
+};
