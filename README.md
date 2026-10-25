@@ -1,4 +1,4 @@
-# 🛒 Sistema de Gerenciamento de E-commerce
+# Sistema de Gerenciamento de E-commerce
 
 > Mini-Projeto Avaliativo - Módulo 1 - Semana 07  
 > **Desenvolvedor Back-End Node [T6]**
