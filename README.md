@@ -5,18 +5,21 @@
 
 ---
 
-## 👤 Identificação
+## Identificação
+
 - **Estudante:** Sidemar Schimmelpfennig
 - **Turma:** T6 - Back-End Node
 
 ---
 
-## 🎯 Objetivo da Aplicação
+## Objetivo da Aplicação
+
 Aplicação desenvolvida em **TypeScript** e executada em **Node.js** para gerenciar as operações de um mini e-commerce via terminal (CLI). O sistema permite administrar catálogo de produtos, clientes, montagem de carrinho com controle de estoque, fechamento atômico de pedidos com histórico de preços e relatórios analíticos de vendas.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
+
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
@@ -27,7 +30,8 @@ Aplicação desenvolvida em **TypeScript** e executada em **Node.js** para geren
 
 ---
 
-## 📁 Estrutura de Arquivos
+## Estrutura de Arquivos
+
 ```text
 mini-ecommerce/
 ├── dist/                  # Código JavaScript compilado
@@ -49,30 +53,36 @@ mini-ecommerce/
 
 ---
 
-## 🚀 Como Compilar e Executar
+## Como Compilar e Executar
 
 ### Pré-requisitos
+
 - Node.js (versão 18 ou superior)
 - npm
 
 ### Passo a passo
+
 1. **Clonar o repositório:**
+
    ```bash
    git clone https://github.com/sidemarschimmelpfennig/mini-ecommerce.git
    cd mini-ecommerce
    ```
 
 2. **Instalar as dependências:**
+
    ```bash
    npm install
    ```
 
 3. **Compilar o código TypeScript:**
+
    ```bash
    npm run build
    ```
 
 4. **Executar a aplicação:**
+
    ```bash
    # Execução direta com tsx:
    npm start
@@ -86,25 +96,28 @@ mini-ecommerce/
 
 ---
 
-## ⚙️ Funcionalidades Implementadas
+## Funcionalidades Implementadas
 
-### 👥 1. Clientes
+### 1. Clientes
+
 - Cadastro com validação de nome completo (mínimo nome e sobrenome) e formato de e-mail.
 - Impedimento de cadastro de e-mails duplicados.
 - Busca individual por ID com tratamento amigável de erros.
 - Listagem geral de todos os clientes cadastrados.
 - Inicialização prévia com 3 clientes para testes imediatos.
 
-### 📦 2. Produtos
+### 2. Produtos
+
 - Cadastro de novos produtos com categoria, preço e estoque.
 - Busca individual por identificador (ID).
-- Busca dinâmica por parte do nome do produto (*case-insensitive*).
+- Busca dinâmica por parte do nome do produto (_case-insensitive_).
 - Listagem geral de produtos do catálogo.
 - Edição dos dados de produtos cadastrados.
 - Exclusão com confirmação de segurança.
 - Inicialização com 5 produtos no catálogo.
 
-### 🛒 3. Carrinho de Compras
+### 3. Carrinho de Compras
+
 - Adição de produtos com verificação de estoque disponível.
 - Se o mesmo produto for adicionado novamente, atualiza a quantidade em vez de duplicar itens.
 - Remoção de itens com confirmação e exibição do nome do produto.
@@ -112,7 +125,8 @@ mini-ecommerce/
 - Visualização do carrinho com cálculo automático de subtotal por item e total geral.
 - Atalho direto para fechamento de pedido informando o cliente.
 
-### 📋 4. Pedidos
+### 4. Pedidos
+
 - Fechamento de compras validando existência do cliente e itens no carrinho.
 - **Operação Atômica:** validação de todos os itens antes de alterar qualquer estoque (não registra pedidos parciais).
 - **Preço Histórico:** registra o preço praticado no exato momento da compra, preservando pedidos anteriores contra alterações futuras no catálogo.
@@ -121,7 +135,8 @@ mini-ecommerce/
 - Consulta filtrada dos pedidos de um cliente específico.
 - Pré-carregado com 3 pedidos históricos.
 
-### 📊 5. Relatórios Analíticos
+### 5. Relatórios Analíticos
+
 - **Relatório de Produtos:** total de itens no catálogo e preço médio.
 - **Relatório de Estoque:** unidades totais, valor patrimonial imobilizado e identificação de estoque baixo ou esgotado.
 - **Relatório de Vendas:** total de pedidos, total de itens vendidos, faturamento geral e ticket médio.
@@ -129,16 +144,18 @@ mini-ecommerce/
 
 ---
 
-## 🔒 Regras de Negócio e Validações
+## Regras de Negócio e Validações
+
 - **Integridade de IDs:** identificadores gerados de forma única e sequencial.
 - **Preços e Quantidades:** preços devem ser estritamente maiores que zero; quantidades e estoques devem ser números inteiros não negativos.
 - **Consistência de Estoque:** não é permitido adicionar ao carrinho nem comprar quantidades acima do saldo disponível.
-- **Validação de Nomes:** exige nome completo válido, aceitando acentos, hífens e apóstrofos (ex: *D'Ávila*, *Jean-Paul*).
+- **Validação de Nomes:** exige nome completo válido, aceitando acentos, hífens e apóstrofos (ex: _D'Ávila_, _Jean-Paul_).
 - **Exclusividade de E-mail:** nenhum cliente pode ser cadastrado com um e-mail já existente.
 
 ---
 
-## ⚠️ Limitações Conhecidas do Sistema
+## Limitações Conhecidas do Sistema
+
 - **Persistência em Memória:** os dados são mantidos em memória durante a execução do processo; reiniciar o programa restaura os dados iniciais de fábrica.
 - **Interface CLI:** o sistema opera exclusivamente via linha de comando no terminal interativo.
 - **Simulação Comercial:** não possui integração com gateways de pagamento bancário, cálculo de frete externo (Correios/transportadora) ou emissão de nota fiscal.
