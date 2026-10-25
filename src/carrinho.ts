@@ -1,38 +1,49 @@
 import { finalizarPedido } from "./pedidos";
-import { verProduto } from "./produtos";
+import { buscarProdutoPorId } from "./produtos";
 import type { ItemCarrinho } from "./types";
 import { logAmarelo, logAzul, logVerde, logVermelho } from "./utils/console";
-import { promptCinza, promptVerde } from "./utils/prompt";
-import promptSync = require("prompt-sync");
-const prompt = promptSync({ sigint: true });
+import { prompt, promptCinza, promptVerde } from "./utils/prompt";
 
 const carrinho: ItemCarrinho[] = [];
 
 function adicionarAoCarrinho(): void {
-  logAzul("\n         === ADICIONAR AO CARRINHO ===");
+  logAzul("\n          === ADICIONAR AO CARRINHO ===");
 
   const produtoId = Number(prompt("          Digite o ID do produto: "));
-  const produto = verProduto(produtoId);
 
-  if (typeof produto === "string") {
-    logVerde("          Produto não encontrado.");
+  if (!Number.isInteger(produtoId) || produtoId <= 0) {
+    logVermelho("          Erro: informe um ID válido.");
+    promptCinza("\n          Pressione Enter para voltar...");
+    return;
+  }
+
+  const produto = buscarProdutoPorId(produtoId);
+
+  if (!produto) {
+    logVermelho("          Erro: produto não encontrado.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   const quantidade = Number(prompt("          Digite a quantidade: "));
 
   if (!Number.isInteger(quantidade) || quantidade <= 0) {
-    logVermelho("     Quantidade inválida.");
+    logVermelho(
+      "          Erro: quantidade inválida (deve ser um inteiro maior que zero).",
+    );
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   const itemExistente = carrinho.find((item) => item.produtoId === produtoId);
-
   const quantidadeAtual = itemExistente ? itemExistente.quantidade : 0;
 
   if (quantidadeAtual + quantidade > produto.estoque) {
-    logVermelho("          Estoque insuficiente.");
-    logVerde(`          Estoque disponível: ${produto.estoque}`);
+    logVermelho("          Erro: estoque insuficiente.");
+    logAmarelo(
+      `          Estoque disponível: ${produto.estoque} (no carrinho: ${quantidadeAtual})`,
+    );
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
@@ -45,107 +56,126 @@ function adicionarAoCarrinho(): void {
     });
   }
 
-  logVerde(`          ${produto.nome} adicionado ao carrinho.`);
-  prompt("          Pressione Enter para voltar...");
-  return;
+  logVerde(
+    `\n          ${produto.nome} (x${quantidade}) adicionado ao carrinho com sucesso!`,
+  );
+  promptCinza("\n          Pressione Enter para voltar...");
 }
 
 function removerDoCarrinho(): void {
   logAzul("\n          === REMOVER DO CARRINHO ===");
 
   if (carrinho.length === 0) {
-    logVerde("\n          O carrinho está vazio.");
-    prompt("          Pressione Enter para voltar...");
+    logAmarelo("\n          O carrinho está vazio.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
-  listarCarrinho();
-
   const produtoId = Number(
-    prompt("\n          Digite o ID do produto que deseja remover: "),
+    prompt("          Digite o ID do produto que deseja remover: "),
   );
 
   if (!Number.isInteger(produtoId) || produtoId <= 0) {
-    console.log("\nErro: informe um ID válido.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: informe um ID válido.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   const indice = carrinho.findIndex((item) => item.produtoId === produtoId);
 
   if (indice === -1) {
-    logVermelho("\n           Erro: produto não encontrado no carrinho.");
-    promptCinza("          Pressione Enter para voltar...");
+    logVermelho("          Erro: produto não encontrado no carrinho.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   const item = carrinho[indice];
 
   if (!item) {
-    logVermelho("\n          Erro: item não encontrado.");
-    promptCinza("          Pressione Enter para voltar...");
+    logVermelho("          Erro: item não encontrado no carrinho.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
-  const produto = verProduto(item.produtoId);
+  const produto = buscarProdutoPorId(produtoId);
+  const nomeProduto = produto ? produto.nome : `Produto ID ${produtoId}`;
 
   const confirmar = promptCinza(
-    `\n        Deseja realmente remover ${
-      typeof produto === "string" ? "este produto" : produto.nome
-    } do carrinho? (s/n): `,
+    `\n          Deseja realmente remover ${nomeProduto} do carrinho? (s/n): `,
   )
     .trim()
     .toLowerCase();
 
   if (confirmar !== "s") {
-    logVerde("\n          Remoção cancelada.");
-    prompt("         Pressione Enter para voltar...");
+    logAmarelo("\n          Remoção cancelada.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   carrinho.splice(indice, 1);
 
   logVerde("\n          Produto removido do carrinho com sucesso!");
-  prompt("         Pressione Enter para voltar ao menu...");
+  promptCinza("\n          Pressione Enter para voltar ao menu...");
 }
 
 function alterarQuantidade(): void {
   logAzul("\n          === ALTERAR QUANTIDADE ===");
 
+  if (carrinho.length === 0) {
+    logAmarelo("\n          O carrinho está vazio.");
+    promptCinza("\n          Pressione Enter para voltar...");
+    return;
+  }
+
   const produtoId = Number(prompt("          Digite o ID do produto: "));
+
+  if (!Number.isInteger(produtoId) || produtoId <= 0) {
+    logVermelho("          Erro: informe um ID válido.");
+    promptCinza("\n          Pressione Enter para voltar...");
+    return;
+  }
 
   const item = carrinho.find((item) => item.produtoId === produtoId);
 
   if (!item) {
-    logVermelho("          Produto não encontrado no carrinho.");
-    prompt("          Pressione Enter para voltar...");
+    logVermelho("          Erro: produto não encontrado no carrinho.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
-  const produto = verProduto(produtoId);
+  const produto = buscarProdutoPorId(produtoId);
 
-  if (typeof produto === "string") {
-    logVermelho("          Produto não encontrado no catálogo.");
-    prompt("          Pressione Enter para voltar...");
+  if (!produto) {
+    logVermelho("          Erro: produto não encontrado no catálogo.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
-  const quantidade = Number(prompt("          Digite a nova quantidade: "));
+  logAzul(`\n          Produto: ${produto.nome}`);
+  logAmarelo(`          Quantidade atual no carrinho: ${item.quantidade}`);
+  logAmarelo(`          Estoque disponível total: ${produto.estoque}`);
+
+  const quantidade = Number(prompt("\n          Digite a nova quantidade: "));
 
   if (!Number.isInteger(quantidade) || quantidade <= 0) {
-    logVermelho("          Quantidade inválida.");
+    logVermelho(
+      "          Erro: quantidade inválida (deve ser um inteiro maior que zero).",
+    );
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   if (quantidade > produto.estoque) {
-    logVermelho("          Estoque insuficiente.");
+    logVermelho("          Erro: estoque insuficiente.");
     logAmarelo(`          Estoque disponível: ${produto.estoque}`);
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   item.quantidade = quantidade;
 
-  logVerde("          Quantidade alterada com sucesso!");
+  logVerde("\n          Quantidade alterada com sucesso!");
+  promptCinza("\n          Pressione Enter para voltar ao menu...");
 }
 
 function listarCarrinho(): ItemCarrinho[] {
@@ -159,9 +189,9 @@ function calcularSubtotal(produtoId: number): number {
     return 0;
   }
 
-  const produto = verProduto(produtoId);
+  const produto = buscarProdutoPorId(produtoId);
 
-  if (typeof produto === "string") {
+  if (!produto) {
     return 0;
   }
 
@@ -180,30 +210,30 @@ function calcularTotalCarrinho(): number {
 
 function mostrarCarrinho(): void {
   logAzul("\n          === CARRINHO DE COMPRAS ===");
-  const carrinho = listarCarrinho();
-  if (carrinho.length === 0) {
-    logVermelho("\n          O carrinho está vazio.");
+  const itens = listarCarrinho();
+
+  if (itens.length === 0) {
+    logAmarelo("\n          O carrinho está vazio.");
     promptCinza("\n          Pressione Enter para voltar ao menu...");
     return;
   }
 
   logVerde("\n          === ITENS DO CARRINHO ===");
 
-  for (const item of carrinho) {
-    const produto = verProduto(item.produtoId);
+  for (const item of itens) {
+    const produto = buscarProdutoPorId(item.produtoId);
 
-    if (typeof produto === "string") {
+    if (!produto) {
       logVermelho(
-        `\n          Erro: produto ID ${item.produtoId} não encontrado.`,
+        `\n          Erro: produto ID ${item.produtoId} não encontrado no catálogo.`,
       );
       continue;
     }
 
     const subtotal = produto.preco * item.quantidade;
 
-    console.log("\n          ------------------------------");
-    console.log(`          ID: ${produto.id}`);
-    console.log(`          Produto: ${produto.nome}`);
+    console.log("\n          ----------------------------------------");
+    logVerde(`          Produto: ${produto.nome} (ID: ${produto.id})`);
     console.log(`          Categoria: ${produto.categoria}`);
     console.log(
       `          Preço unitário: R$ ${produto.preco.toFixed(2).replace(".", ",")}`,
@@ -216,11 +246,11 @@ function mostrarCarrinho(): void {
 
   const total = calcularTotalCarrinho();
 
-  logAmarelo("\n          ==============================");
+  console.log("\n          ========================================");
   logAmarelo(
-    `            TOTAL DA COMPRA: R$ ${total.toFixed(2).replace(".", ",")}`,
+    `          TOTAL DA COMPRA: R$ ${total.toFixed(2).replace(".", ",")}`,
   );
-  logAmarelo("          ==============================");
+  console.log("          ========================================");
 
   console.log("\n          1 - Finalizar pedido");
   logVermelho("          0 - Voltar");
@@ -232,6 +262,11 @@ function mostrarCarrinho(): void {
       const clienteId = Number(
         promptVerde("          Digite o ID do cliente: "),
       );
+      if (!Number.isInteger(clienteId) || clienteId <= 0) {
+        logVermelho("          Erro: informe um ID de cliente válido.");
+        promptCinza("\n          Pressione Enter para voltar...");
+        break;
+      }
 
       finalizarPedido(clienteId);
       break;
