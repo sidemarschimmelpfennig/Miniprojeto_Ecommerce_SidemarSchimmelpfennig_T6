@@ -3,13 +3,11 @@ import { listarClientes } from "./clientes";
 import { listarProdutos } from "./produtos";
 import {
   listarCarrinho,
-  removerDoCarrinho,
   calcularTotalCarrinho,
   limparCarrinho,
 } from "./carrinho";
 import {
   logAmarelo,
-  logAzul,
   logVerde,
   logVermelho,
 } from "./utils/console";
@@ -155,40 +153,15 @@ function finalizarPedido(clienteId: number): Pedido | null {
   pedidos.push(novoPedido);
   limparCarrinho();
 
-  logVerde("           Pedido finalizado com sucesso!");
-  console.log(`          Pedido: ${novoPedido.id}`);
-  console.log(`          Cliente: ${cliente.nome}`);
-  console.log(`          Total: R$ ${total.toFixed(2).replace(".", ",")}`);
-  console.log(`          Data: ${novoPedido.data.toLocaleString("pt-BR")}`);
-  console.log("\n\n");
-  prompt("          Pressione Enter para voltar...");
+  logVerde("\n          Pedido finalizado com sucesso!");
+  exibirDetalhesPedido(novoPedido);
+  prompt("          Pressione Enter para voltar ao menu...");
 
   return novoPedido;
 }
 
 function listarPedidos(): Pedido[] {
   return pedidos;
-}
-
-function listagemPedidos() {
-  const pedidos = listarPedidos();
-  logAzul("          === LISTAGEM DE PEDIDOS ===");
-  if (pedidos.length <= 0) {
-    logAmarelo("          Nenhum pedido cadastrado.");
-  } else {
-    pedidos.forEach((pedido) => {
-      console.log(
-        `          ID: ${pedido.id} | Cliente: ${pedido.clienteId} | Quantidade de Itens: ${pedido.itens.length} |   Data: ${pedido.data.toLocaleDateString("pt-BR")} | Total: ${pedido.total.toLocaleString(
-          "pt-BR",
-          {
-            style: "currency",
-            currency: "BRL",
-          },
-        )}`,
-      );
-    });
-  }
-  prompt("\n          Pressione Enter para voltar ao menu... ");
 }
 
 function listarPedidosPorCliente(clienteId: number): Pedido[] {
@@ -219,7 +192,6 @@ export {
   listarPedidos,
   listarPedidosPorCliente,
   buscarPedidoPorId,
-  listagemPedidos,
   exibirDetalhesPedido,
 };
 

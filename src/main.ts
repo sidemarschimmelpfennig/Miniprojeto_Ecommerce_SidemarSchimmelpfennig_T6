@@ -16,9 +16,9 @@ import {
 } from "./produtos";
 
 import {
+  listarPedidos,
   listarPedidosPorCliente,
   buscarPedidoPorId,
-  listagemPedidos,
   exibirDetalhesPedido,
 } from "./pedidos";
 
@@ -194,9 +194,17 @@ function menuPedidos(): void {
     opcao = prompt("Escolha uma opção: ").trim();
 
     switch (opcao) {
-      case "1":
-        listagemPedidos();
+      case "1": {
+        const pedidos = listarPedidos();
+        logAzul("\n          === LISTAGEM DE PEDIDOS ===");
+        if (pedidos.length === 0) {
+          logAmarelo("          Nenhum pedido cadastrado.");
+        } else {
+          pedidos.forEach((pedido) => exibirDetalhesPedido(pedido));
+        }
+        prompt("Pressione Enter para continuar...");
         break;
+      }
 
       case "2": {
         const id = Number(prompt("Digite o ID do pedido: "));
