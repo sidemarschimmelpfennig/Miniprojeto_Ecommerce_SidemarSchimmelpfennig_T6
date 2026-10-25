@@ -308,13 +308,13 @@ function menuCarrinho(): void {
 
   do {
     logAzul("\n     === CARRINHO ===");
-    logCinza("    1 - Adicionar produto");
-    logCinza("    2 - Remover produto");
-    logCinza("    3 - Alterar quantidade");
-    logCinza("    4 - Listar carrinho");
-    logVermelho("    0 - Voltar");
+    console.log("     1 - Adicionar produto");
+    console.log("     2 - Remover produto");
+    console.log("     3 - Alterar quantidade");
+    console.log("     4 - Listar carrinho");
+    logVermelho("     0 - Voltar");
 
-    opcao = promptVerde("    Escolha uma opção: ").trim();
+    opcao = promptVerde("     Escolha uma opção: ").trim();
 
     switch (opcao) {
       case "1":
@@ -337,7 +337,7 @@ function menuCarrinho(): void {
         break;
 
       default:
-        logVermelho("Opção inválida!");
+        logVermelho("     Opção inválida!");
         promptCinza("     Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
@@ -347,11 +347,11 @@ function menuRelatorios(): void {
   let opcao: string;
   do {
     logAzul("\n     === RELATORIOS ===");
-    logCinza("     1 - Relatório de produtos");
-    logCinza("     2 - Relatório de estoque");
-    logCinza("     3 - Relatório de vendas");
-    logCinza("     4 - Vendas por cliente");
-    logVermelho("     0 - Voltar ao menu principal");
+    console.log("     1 - Relatório de produtos");
+    console.log("     2 - Relatório de estoque");
+    console.log("     3 - Relatório de vendas");
+    console.log("     4 - Vendas por cliente");
+    logVermelho("     0 - Voltar");
 
     opcao = promptVerde("     Escolha uma opção: ").trim();
 
@@ -376,8 +376,8 @@ function menuRelatorios(): void {
         break;
 
       default:
-        console.log("Opção inválida!");
-        prompt("     Pressione Enter para continuar...");
+        logVermelho("     Opção inválida!");
+        promptCinza("     Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
 }
