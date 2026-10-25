@@ -12,7 +12,9 @@ import {
   deletarProduto,
   editarProduto,
   listarProdutos,
-  verProduto,
+  buscarProdutoPorId,
+  buscarProdutosPorNome,
+  exibirDetalhesProduto,
 } from "./produtos";
 
 import {
@@ -155,11 +157,12 @@ function menuProdutos(): void {
 
   do {
     logAzul("\n     === PRODUTOS ===");
-    logCinza("     1 - Cadastrar produto");
-    logCinza("     2 - Buscar produto por ID");
-    logCinza("     3 - Listar produtos");
-    logCinza("     4 - Editar produto");
-    logCinza("     5 - Excluir produto");
+    console.log("     1 - Cadastrar produto");
+    console.log("     2 - Buscar produto por ID");
+    console.log("     3 - Buscar produtos por nome");
+    console.log("     4 - Listar todos os produtos");
+    console.log("     5 - Editar produto");
+    console.log("     6 - Excluir produto");
     logVermelho("     0 - Voltar");
 
     opcao = promptVerde("     Escolha uma opção: ").trim();
@@ -170,21 +173,55 @@ function menuProdutos(): void {
         break;
 
       case "2": {
-        const id = Number(prompt("Digite o ID do produto: "));
-        console.log(verProduto(id));
-        prompt("Pressione Enter para continuar...");
+        const id = Number(prompt("          Digite o ID do produto: "));
+        if (!Number.isInteger(id) || id <= 0) {
+          logVermelho("          Erro: informe um ID válido.");
+        } else {
+          const produto = buscarProdutoPorId(id);
+          if (!produto) {
+            logVermelho("          Erro: produto não encontrado.");
+          } else {
+            exibirDetalhesProduto(produto);
+          }
+        }
+        promptCinza("\n          Pressione Enter para continuar...");
         break;
       }
 
-      case "3":
-        listarProdutos();
+      case "3": {
+        const termo = prompt("          Digite o nome ou parte do nome: ").trim();
+        if (!termo) {
+          logVermelho("          Erro: informe um termo para busca.");
+        } else {
+          const encontrados = buscarProdutosPorNome(termo);
+          if (encontrados.length === 0) {
+            logAmarelo("          Nenhum produto encontrado com esse termo.");
+          } else {
+            logAzul(`\n          === RESULTADOS PARA: "${termo}" ===`);
+            encontrados.forEach((produto) => exibirDetalhesProduto(produto));
+          }
+        }
+        promptCinza("\n          Pressione Enter para continuar...");
         break;
+      }
 
-      case "4":
+      case "4": {
+        const lista = listarProdutos();
+        logAzul("\n          === LISTAGEM DE PRODUTOS ===");
+        if (lista.length === 0) {
+          logAmarelo("          Nenhum produto cadastrado.");
+        } else {
+          lista.forEach((produto) => exibirDetalhesProduto(produto));
+        }
+        promptCinza("\n          Pressione Enter para continuar...");
+        break;
+      }
+
+      case "5":
         editarProduto();
         break;
 
-      case "5":
+      case "6":
         deletarProduto();
         break;
 
@@ -192,8 +229,8 @@ function menuProdutos(): void {
         break;
 
       default:
-        console.log("Opção inválida!");
-        prompt("Pressione Enter para continuar...");
+        logVermelho("     Opção inválida!");
+        promptCinza("     Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
 }

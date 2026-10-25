@@ -1,7 +1,12 @@
 import type { Produto } from "./types";
-import promptSync = require("prompt-sync");
-
-const prompt = promptSync({ sigint: true });
+import {
+  logAmarelo,
+  logAzul,
+  logCinza,
+  logVerde,
+  logVermelho,
+} from "./utils/console";
+import { prompt, promptCinza } from "./utils/prompt";
 
 const produtos: Produto[] = [
   {
@@ -41,52 +46,53 @@ const produtos: Produto[] = [
   },
 ];
 
-function verProduto(id: number): Produto | string {
-  const produto = produtos.find((produto) => produto.id === id);
-
-  if (produto) {
-    return produto;
-  }
-
-  console.log("\n=== ERRO ===");
-  console.log("Produto não encontrado.");
-  console.log("1 - Tentar novamente");
-  console.log("0 - Voltar ao menu anterior");
-
-  const opcao = prompt("Escolha uma opção: ");
-
-  switch (opcao) {
-    case "1": {
-      const novoId = Number(prompt("Digite o ID do produto: "));
-
-      if (!Number.isInteger(novoId) || novoId <= 0) {
-        console.log("\nErro: informe um ID válido.");
-        return "Operação cancelada";
-      }
-
-      return verProduto(novoId);
-    }
-
-    case "0":
-      return "Operação cancelada";
-
-    default:
-      console.log("Opção inválida.");
-      return "Operação cancelada";
-  }
-}
-
 function listarProdutos(): Produto[] {
   return produtos;
 }
 
-function cadastrarProduto(): void {
-  console.log("\n=== CADASTRAR PRODUTO ===");
+function buscarProdutoPorId(id: number): Produto | undefined {
+  return produtos.find((produto) => produto.id === id);
+}
 
-  const nome = prompt("Digite o nome: ").trim();
-  const preco = Number(prompt("Digite o preço: ").replace(",", "."));
-  const estoque = Number(prompt("Digite o estoque: "));
-  const categoria = prompt("Digite a categoria: ").trim();
+function buscarProdutosPorNome(termo: string): Produto[] {
+  const busca = termo.trim().toLowerCase();
+  return produtos.filter((produto) => produto.nome.toLowerCase().includes(busca));
+}
+
+function filtrarProdutosPorCategoria(categoria: string): Produto[] {
+  const busca = categoria.trim().toLowerCase();
+  return produtos.filter(
+    (produto) => produto.categoria.toLowerCase() === busca,
+  );
+}
+
+function verProduto(id: number): Produto | string {
+  const produto = buscarProdutoPorId(id);
+  if (!produto) {
+    return "Produto não encontrado.";
+  }
+  return produto;
+}
+
+function exibirDetalhesProduto(produto: Produto): void {
+  console.log("\n          ----------------------------------------");
+  logVerde(`          Produto ID: ${produto.id}`);
+  console.log(`          Nome: ${produto.nome}`);
+  console.log(`          Categoria: ${produto.categoria}`);
+  console.log(`          Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
+  console.log(`          Estoque: ${produto.estoque} unidade(s)`);
+  console.log("          ----------------------------------------");
+}
+
+function cadastrarProduto(): void {
+  logAzul("\n          === CADASTRAR PRODUTO ===");
+
+  const nome = prompt("          Digite o nome: ").trim();
+  const categoria = prompt("          Digite a categoria: ").trim();
+  const preco = Number(
+    prompt("          Digite o preço: ").replace(",", "."),
+  );
+  const estoque = Number(prompt("          Digite o estoque: "));
 
   if (
     !nome ||
@@ -96,10 +102,10 @@ function cadastrarProduto(): void {
     !Number.isInteger(estoque) ||
     estoque < 0
   ) {
-    console.log(
-      "\nErro: informe nome e categoria, preço maior que zero e estoque inteiro não negativo.",
+    logVermelho(
+      "          Erro: informe nome e categoria, preço maior que zero e estoque inteiro não negativo.",
     );
-    prompt("Pressione Enter para voltar...");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
@@ -108,8 +114,8 @@ function cadastrarProduto(): void {
   );
 
   if (produtoExiste) {
-    console.log("\nErro: já existe um produto com esse nome.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: já existe um produto com esse nome.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
@@ -126,48 +132,39 @@ function cadastrarProduto(): void {
 
   produtos.push(novoProduto);
 
-  console.log("\nProduto cadastrado com sucesso!");
-  console.log(`ID: ${novoProduto.id}`);
-  console.log(`Nome: ${novoProduto.nome}`);
-  console.log(`Categoria: ${novoProduto.categoria}`);
-  console.log(`Preço: R$ ${novoProduto.preco.toFixed(2).replace(".", ",")}`);
-  console.log(`Estoque: ${novoProduto.estoque}`);
-
-  prompt("\nPressione Enter para voltar ao menu...");
+  logVerde("\n          Produto cadastrado com sucesso!");
+  exibirDetalhesProduto(novoProduto);
+  promptCinza("\n          Pressione Enter para voltar ao menu...");
 }
 
 function editarProduto(): void {
-  console.log("\n=== EDITAR PRODUTO ===");
+  logAzul("\n          === EDITAR PRODUTO ===");
 
-  const id = Number(prompt("Digite o ID do produto: "));
+  const id = Number(prompt("          Digite o ID do produto: "));
 
   if (!Number.isInteger(id) || id <= 0) {
-    console.log("\nErro: informe um ID válido.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: informe um ID válido.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   const produto = produtos.find((item) => item.id === id);
 
   if (!produto) {
-    console.log("\nErro: produto não encontrado.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: produto não encontrado.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
-  console.log("\n=== DADOS ATUAIS DO PRODUTO ===");
-  console.log(`ID: ${produto.id}`);
-  console.log(`Nome: ${produto.nome}`);
-  console.log(`Categoria: ${produto.categoria}`);
-  console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
-  console.log(`Estoque: ${produto.estoque}`);
+  logAzul("\n          === DADOS ATUAIS DO PRODUTO ===");
+  exibirDetalhesProduto(produto);
 
-  console.log("\nPressione Enter para manter o valor atual.");
+  logCinza("          Pressione Enter para manter o valor atual.");
 
-  const nome = prompt("Novo nome: ").trim();
-  const categoria = prompt("Nova categoria: ").trim();
-  const precoInput = prompt("Novo preço: ").trim();
-  const estoqueInput = prompt("Novo estoque: ").trim();
+  const nome = prompt("          Novo nome: ").trim();
+  const categoria = prompt("          Nova categoria: ").trim();
+  const precoInput = prompt("          Novo preço: ").trim();
+  const estoqueInput = prompt("          Novo estoque: ").trim();
 
   const novoNome = nome || produto.nome;
   const novaCategoria = categoria || produto.categoria;
@@ -184,10 +181,10 @@ function editarProduto(): void {
     !Number.isInteger(novoEstoque) ||
     novoEstoque < 0
   ) {
-    console.log(
-      "\nErro: nome e categoria são obrigatórios, preço deve ser maior que zero e estoque deve ser um inteiro não negativo.",
+    logVermelho(
+      "          Erro: nome e categoria são obrigatórios, preço deve ser maior que zero e estoque inteiro não negativo.",
     );
-    prompt("           Pressione Enter para voltar...");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
@@ -198,8 +195,8 @@ function editarProduto(): void {
   );
 
   if (nomeExiste) {
-    console.log("\nErro: já existe outro produto com esse nome.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: já existe outro produto com esse nome.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
@@ -208,69 +205,66 @@ function editarProduto(): void {
   produto.preco = novoPreco;
   produto.estoque = novoEstoque;
 
-  console.log("\nProduto atualizado com sucesso!");
-  console.log(`ID: ${produto.id}`);
-  console.log(`Nome: ${produto.nome}`);
-  console.log(`Categoria: ${produto.categoria}`);
-  console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
-  console.log(`Estoque: ${produto.estoque}`);
-
-  prompt("\nPressione Enter para voltar ao menu...");
+  logVerde("\n          Produto atualizado com sucesso!");
+  exibirDetalhesProduto(produto);
+  promptCinza("\n          Pressione Enter para voltar ao menu...");
 }
 
 function deletarProduto(): void {
-  console.log("\n=== EXCLUIR PRODUTO ===");
+  logAzul("\n          === EXCLUIR PRODUTO ===");
 
-  const id = Number(prompt("Digite o ID do produto: "));
+  const id = Number(prompt("          Digite o ID do produto: "));
 
   if (!Number.isInteger(id) || id <= 0) {
-    console.log("\nErro: informe um ID válido.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: informe um ID válido.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   const indice = produtos.findIndex((produto) => produto.id === id);
 
   if (indice === -1) {
-    console.log("\nErro: produto não encontrado.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: produto não encontrado.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
   const produto = produtos[indice];
 
   if (!produto) {
-    console.log("\nErro: produto não encontrado.");
-    prompt("Pressione Enter para voltar...");
+    logVermelho("          Erro: produto não encontrado.");
+    promptCinza("\n          Pressione Enter para voltar...");
     return;
   }
 
-  console.log("\n=== DADOS DO PRODUTO ===");
-  console.log(`ID: ${produto.id}`);
-  console.log(`Nome: ${produto.nome}`);
-  console.log(`Categoria: ${produto.categoria}`);
-  console.log(`Preço: R$ ${produto.preco.toFixed(2).replace(".", ",")}`);
-  console.log(`Estoque: ${produto.estoque}`);
+  logAzul("\n          === DADOS DO PRODUTO ===");
+  exibirDetalhesProduto(produto);
 
-  const confirmar = prompt("\nDeseja realmente excluir este produto? (s/n): ")
+  const confirmar = promptCinza(
+    "\n          Deseja realmente excluir este produto? (s/n): ",
+  )
     .trim()
     .toLowerCase();
 
   if (confirmar !== "s") {
-    console.log("\nExclusão cancelada.");
-    prompt("Pressione Enter para voltar ao menu...");
+    logAmarelo("\n          Exclusão cancelada.");
+    promptCinza("\n          Pressione Enter para voltar ao menu...");
     return;
   }
 
   produtos.splice(indice, 1);
 
-  console.log("\nProduto excluído com sucesso!");
-  prompt("Pressione Enter para voltar ao menu...");
+  logVerde("\n          Produto excluído com sucesso!");
+  promptCinza("\n          Pressione Enter para voltar ao menu...");
 }
 
 export {
-  verProduto,
   listarProdutos,
+  buscarProdutoPorId,
+  buscarProdutosPorNome,
+  filtrarProdutosPorCategoria,
+  verProduto,
+  exibirDetalhesProduto,
   cadastrarProduto,
   editarProduto,
   deletarProduto,
