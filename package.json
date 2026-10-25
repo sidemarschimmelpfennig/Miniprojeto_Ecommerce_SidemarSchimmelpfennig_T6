@@ -1,0 +1,35 @@
+{
+  "name": "mini-ecommerce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/main.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sidemarschimmelpfennig/mini-ecommerce.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sidemarschimmelpfennig/mini-ecommerce/issues"
+  },
+  "homepage": "https://github.com/sidemarschimmelpfennig/mini-ecommerce#readme",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/prompts": "^2.4.9",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@types/prompt-sync": "^4.2.3",
+    "prompt-sync": "^4.2.0",
+    "prompts": "^2.4.2"
+  }
+}
