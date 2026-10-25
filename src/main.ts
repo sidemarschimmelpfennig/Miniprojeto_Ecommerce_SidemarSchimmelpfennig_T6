@@ -28,7 +28,7 @@ import {
   mostrarCarrinho,
   removerDoCarrinho,
 } from "./carrinho";
-import { logAzul, logCinza, logVerde, logVermelho } from "./utils/console";
+import { logAmarelo, logAzul, logCinza, logVerde, logVermelho } from "./utils/console";
 import { promptCinza, promptVerde } from "./utils/prompt";
 import {
   relatorioEstoque,
@@ -185,13 +185,13 @@ function menuPedidos(): void {
   let opcao: string;
 
   do {
-    logAzul("\n    === PEDIDOS ===");
-    console.log("    1 - Listar todos os pedidos");
-    console.log("    2 - Buscar pedido por ID");
-    console.log("    3 - Listar pedidos por cliente");
-    logVermelho("    0 - Voltar");
+    logAzul("\n     === PEDIDOS ===");
+    console.log("     1 - Listar todos os pedidos");
+    console.log("     2 - Buscar pedido por ID");
+    console.log("     3 - Listar pedidos por cliente");
+    logVermelho("     0 - Voltar");
 
-    opcao = prompt("Escolha uma opção: ").trim();
+    opcao = promptVerde("     Escolha uma opção: ").trim();
 
     switch (opcao) {
       case "1": {
@@ -202,40 +202,40 @@ function menuPedidos(): void {
         } else {
           pedidos.forEach((pedido) => exibirDetalhesPedido(pedido));
         }
-        prompt("Pressione Enter para continuar...");
+        promptCinza("\n          Pressione Enter para continuar...");
         break;
       }
 
       case "2": {
-        const id = Number(prompt("Digite o ID do pedido: "));
+        const id = Number(prompt("          Digite o ID do pedido: "));
         if (!Number.isInteger(id) || id <= 0) {
-          logVermelho("Erro: informe um ID válido.");
+          logVermelho("          Erro: informe um ID válido.");
         } else {
           const pedido = buscarPedidoPorId(id);
           if (!pedido) {
-            logVermelho("Pedido não encontrado.");
+            logVermelho("          Erro: pedido não encontrado.");
           } else {
             exibirDetalhesPedido(pedido);
           }
         }
-        prompt("Pressione Enter para continuar...");
+        promptCinza("\n          Pressione Enter para continuar...");
         break;
       }
 
       case "3": {
-        const clienteId = Number(prompt("Digite o ID do cliente: "));
+        const clienteId = Number(prompt("          Digite o ID do cliente: "));
         if (!Number.isInteger(clienteId) || clienteId <= 0) {
-          logVermelho("Erro: informe um ID de cliente válido.");
+          logVermelho("          Erro: informe um ID de cliente válido.");
         } else {
           const pedidosCliente = listarPedidosPorCliente(clienteId);
           if (pedidosCliente.length === 0) {
-            logAmarelo("Nenhum pedido encontrado para este cliente.");
+            logAmarelo("          Nenhum pedido encontrado para este cliente.");
           } else {
             logAzul(`\n          === PEDIDOS DO CLIENTE #${clienteId} ===`);
             pedidosCliente.forEach((pedido) => exibirDetalhesPedido(pedido));
           }
         }
-        prompt("Pressione Enter para continuar...");
+        promptCinza("\n          Pressione Enter para continuar...");
         break;
       }
 
@@ -243,8 +243,8 @@ function menuPedidos(): void {
         break;
 
       default:
-        logVermelho("Opção inválida!");
-        prompt("Pressione Enter para continuar...");
+        logVermelho("     Opção inválida!");
+        promptCinza("     Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
 }

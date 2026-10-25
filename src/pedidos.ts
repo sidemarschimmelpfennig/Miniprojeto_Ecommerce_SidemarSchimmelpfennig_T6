@@ -104,18 +104,18 @@ function finalizarPedido(clienteId: number): Pedido | null {
     );
 
     if (!produto) {
-      logVermelho(`Produto ID ${item.produtoId} não encontrado.`);
+      logVermelho(`          Erro: produto ID ${item.produtoId} não encontrado.`);
       return null;
     }
 
     if (!Number.isInteger(item.quantidade) || item.quantidade <= 0) {
-      logVermelho(`Quantidade inválida para ${produto.nome}.`);
+      logVermelho(`          Erro: quantidade inválida para ${produto.nome}.`);
       return null;
     }
 
     if (produto.estoque < item.quantidade) {
-      logVermelho(`Estoque insuficiente para ${produto.nome}.`);
-      logAmarelo(`Estoque disponível: ${produto.estoque}`);
+      logVermelho(`          Erro: estoque insuficiente para ${produto.nome}.`);
+      logAmarelo(`          Estoque disponível: ${produto.estoque}`);
       return null;
     }
 
@@ -180,7 +180,7 @@ function exibirDetalhesPedido(pedido: Pedido): void {
   console.log("          Itens do Pedido:");
   pedido.itens.forEach((item) => {
     console.log(
-      `            - [ID ${item.produtoId}] ${item.nome} | Qtd: ${item.quantidade} | Unit: R$ ${item.precoUnitario.toFixed(2).replace(".", ",")} | Subtotal: R$ ${item.subtotal.toFixed(2).replace(".", ",")}`,
+      `               - [ID ${item.produtoId}] ${item.nome} | Qtd: ${item.quantidade} | Unit: R$ ${item.precoUnitario.toFixed(2).replace(".", ",")} | Subtotal: R$ ${item.subtotal.toFixed(2).replace(".", ",")}`,
     );
   });
   logAmarelo(`          Total: R$ ${pedido.total.toFixed(2).replace(".", ",")}`);
