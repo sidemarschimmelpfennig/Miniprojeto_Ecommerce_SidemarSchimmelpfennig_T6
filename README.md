@@ -65,7 +65,7 @@ mini-ecommerce/
 1. **Clonar o repositório:**
 
    ```bash
-   git clone https://github.com/sidemarschimmelpfennig/mini-ecommerce.git
+   git clone https://github.com/sidemarschimmelpfennig/Miniprojeto_Ecommerce_SidemarSchimmelpfennig_T6.git
    cd mini-ecommerce
    ```
 
