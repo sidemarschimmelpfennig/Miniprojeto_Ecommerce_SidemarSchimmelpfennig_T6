@@ -4,7 +4,7 @@ import {
   cadastrarCliente,
   listarClientes,
   buscarClientePorId,
-  listagemClientes,
+  exibirDetalhesCliente,
 } from "./clientes";
 
 import {
@@ -113,22 +113,39 @@ function menuClientes(): void {
         break;
 
       case "2": {
-        const id = Number(promptVerde("Digite o ID do cliente: "));
-        buscarClientePorId(id);
-        promptCinza("Pressione Enter para continuar...");
+        const id = Number(prompt("          Digite o ID do cliente: "));
+        if (!Number.isInteger(id) || id <= 0) {
+          logVermelho("          Erro: informe um ID válido.");
+        } else {
+          const cliente = buscarClientePorId(id);
+          if (!cliente) {
+            logVermelho("          Erro: cliente não encontrado.");
+          } else {
+            exibirDetalhesCliente(cliente);
+          }
+        }
+        promptCinza("\n          Pressione Enter para continuar...");
         break;
       }
 
-      case "3":
-        listagemClientes();
+      case "3": {
+        const clientes = listarClientes();
+        logAzul("\n          === LISTAGEM DE CLIENTES ===");
+        if (clientes.length === 0) {
+          logAmarelo("          Nenhum cliente cadastrado.");
+        } else {
+          clientes.forEach((cliente) => exibirDetalhesCliente(cliente));
+        }
+        promptCinza("\n          Pressione Enter para continuar...");
         break;
+      }
 
       case "0":
         break;
 
       default:
-        logVermelho("Opção inválida!");
-        promptCinza("Pressione Enter para continuar...");
+        logVermelho("     Opção inválida!");
+        promptCinza("     Pressione Enter para continuar...");
     }
   } while (opcao !== "0");
 }

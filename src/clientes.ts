@@ -30,6 +30,12 @@ function validarEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function validarNome(nome: string): boolean {
+  if (!nome || typeof nome !== "string") return false;
+  const regexNome = /^[\p{L}\p{M}'-]{2,}(?:\s+[\p{L}\p{M}'-]{2,})+$/u;
+  return regexNome.test(nome.trim());
+}
+
 function cadastrarCliente(): void {
   logAzul("\n          === CADASTRAR CLIENTE ===");
 
@@ -38,17 +44,25 @@ function cadastrarCliente(): void {
       ? Math.max(...clientes.map((cliente) => cliente.id)) + 1
       : 1;
 
-  const nome = prompt("          Digite o nome: ").trim();
+  const nome = prompt("          Digite o nome completo: ").trim();
   const email = prompt("          Digite o e-mail: ").trim();
 
-  if (!validarEmail(email)) {
-    logVermelho("          Erro: informe um e-mail válido.");
+  if (!nome || !email) {
+    logVermelho("          Erro: informe o nome e o e-mail.");
     prompt("\n          Pressione Enter para voltar ao menu...");
     return;
   }
 
-  if (!nome || !email) {
-    logVermelho("\n     Erro: informe o nome e o e-mail.");
+  if (!validarNome(nome)) {
+    logVermelho(
+      "          Erro: informe o nome completo válido (ao menos nome e sobrenome).",
+    );
+    prompt("\n          Pressione Enter para voltar ao menu...");
+    return;
+  }
+
+  if (!validarEmail(email)) {
+    logVermelho("          Erro: informe um e-mail válido.");
     prompt("\n          Pressione Enter para voltar ao menu...");
     return;
   }
@@ -58,7 +72,7 @@ function cadastrarCliente(): void {
   );
 
   if (emailExiste) {
-    logVermelho("\n     Erro: já existe um cliente com esse e-mail.");
+    logVermelho("          Erro: já existe um cliente com esse e-mail.");
     prompt("\n          Pressione Enter para voltar ao menu...");
     return;
   }
@@ -71,10 +85,8 @@ function cadastrarCliente(): void {
 
   clientes.push(novoCliente);
 
-  logVerde("\n         Cliente cadastrado com sucesso!");
-  logCinza(`         ID: ${novoCliente.id}`);
-  logCinza(`         Nome: ${novoCliente.nome}`);
-  logCinza(`         E-mail: ${novoCliente.email}`);
+  logVerde("\n          Cliente cadastrado com sucesso!");
+  exibirDetalhesCliente(novoCliente);
   prompt("\n          Pressione Enter para voltar ao menu...");
 }
 
@@ -82,40 +94,23 @@ function listarClientes(): Cliente[] {
   return clientes;
 }
 
-function listagemClientes(): void {
-  const clients: Cliente[] = listarClientes();
-  logAzul("\n           ===== Listar clientes =====");
-  if (clients.length <= 0) {
-    logAmarelo("           Nenhum pedido encontrado !");
-  }
-  clients.forEach((cliente) => {
-    console.log("            ===================================");
-    console.log(`            ID : ${cliente.id}`);
-    console.log(`            Nome: ${cliente.nome}`);
-    console.log(`            Email: ${cliente.email} `);
-  });
-  prompt("\n            Pressione Enter para voltar ao menu...");
+function buscarClientePorId(id: number): Cliente | undefined {
+  return clientes.find((cliente) => cliente.id === id);
 }
 
-function buscarClientePorId(id: number): Cliente | undefined {
-  const cliente = clientes.find((cliente) => cliente.id === id);
-
-  if (!cliente) {
-    console.log("\nCliente não encontrado.");
-    return undefined;
-  }
-
-  logAzul("\n     === CLIENTE ENCONTRADO ===");
-  console.log(`     ID: ${cliente.id}`);
-  console.log(`     Nome: ${cliente.nome}`);
-  console.log(`     E-mail: ${cliente.email}`);
-
-  prompt("\n          Pressione Enter para voltar ao menu...");
+function exibirDetalhesCliente(cliente: Cliente): void {
+  console.log("\n          ----------------------------------------");
+  logVerde(`          Cliente ID: ${cliente.id}`);
+  console.log(`          Nome: ${cliente.nome}`);
+  console.log(`          E-mail: ${cliente.email}`);
+  console.log("          ----------------------------------------");
 }
 
 export {
   cadastrarCliente,
   listarClientes,
   buscarClientePorId,
-  listagemClientes,
+  exibirDetalhesCliente,
+  validarNome,
+  validarEmail,
 };
