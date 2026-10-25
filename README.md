@@ -66,7 +66,6 @@ mini-ecommerce/
 
    ```bash
    git clone https://github.com/sidemarschimmelpfennig/Miniprojeto_Ecommerce_SidemarSchimmelpfennig_T6.git
-   cd mini-ecommerce
    ```
 
 2. **Instalar as dependências:**
